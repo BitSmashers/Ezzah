@@ -1,5 +1,6 @@
 # Ezzah
-Simple Multi-Media Platform 
+Simple Multi-Media Collaborative Platform
+Easy way to bind média from multiple source (Youtube, SoundCloud, Genius, Wikipedia...)
 
 Live Demo : http://ezzah.chradr.com/
 
