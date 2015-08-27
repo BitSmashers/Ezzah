@@ -26,9 +26,8 @@
         },
         ready: function() {
         },
-        playVideo: function(evt, b, c) {
-          console.log("PLya video : ", evt.target.dataset.vid)
-          this.fire('iron-signal', {name: "playyoutubevideo", data: evt.target.dataset.vid});
+        playVideo: function(evt) {
+          this.fire('iron-signal', {name: 'playyoutubevideo', data: evt.target.dataset.vid});
         }
       });
     })();

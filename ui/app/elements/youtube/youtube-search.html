@@ -8,7 +8,7 @@
     <paper-input value="{{search::input}}"></paper-input>
     <iron-ajax
        auto
-       url="{{search_url}}"
+       url="{{searchUrl}}"
        handle-as="json"
        last-response="{{results}}"
        debounce-duration="300"></iron-ajax>
@@ -25,14 +25,14 @@
       Polymer({
         is: 'youtube-search',
         computeUrl: function(s) {
-          return "https://www.googleapis.com/youtube/v3/search?q="+s+"&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew"
+          return 'https://www.googleapis.com/youtube/v3/search?q='+s+'&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew'
         },
         properties: {
           items: {
             type: Array,
             notify: true,
           },
-          search_url: {
+          searchUrl: {
             type: String,
             computed: 'computeUrl(search)'
           }
