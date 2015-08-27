@@ -1,0 +1,37 @@
+<dom-module id="youtube-result" attributes="item">
+  <style>
+    :host {
+      display: block;
+    }
+    img {
+      float:left;
+      width: 150px;
+    }
+  </style>
+  <template>
+    <paper-item>
+      <img src="{{item.snippet.thumbnails.default.url}}" />
+      <div>
+        <a href="" on-click="playVideo" data-vid$="{{item.id.videoId}}">{{item.snippet.title}}</a>
+        <p>{{item.snippet.description}}</p>
+      </div>
+    </paper-item>
+  </template>
+
+  <script>
+    (function () {
+      Polymer({
+        is: 'youtube-result',
+        properties: {
+        },
+        ready: function() {
+        },
+        playVideo: function(evt, b, c) {
+          console.log("PLya video : ", evt.target.dataset.vid)
+          this.fire('iron-signal', {name: "playyoutubevideo", data: evt.target.dataset.vid});
+        }
+      });
+    })();
+  </script>
+
+</dom-module>

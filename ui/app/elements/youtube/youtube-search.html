@@ -1,0 +1,46 @@
+<dom-module id="youtube-search">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+    <paper-input value="{{search::input}}"></paper-input>
+    <iron-ajax
+       auto
+       url="{{search_url}}"
+       handle-as="json"
+       last-response="{{results}}"
+       debounce-duration="300"></iron-ajax>
+
+    <ul>
+      <template is="dom-repeat" items="{{results.items}}">
+        <youtube-result item="{{item}}"></youtube-result>
+      </template>
+    </ul>
+  </template>
+
+  <script>
+    (function () {
+      Polymer({
+        is: 'youtube-search',
+        computeUrl: function(s) {
+          return "https://www.googleapis.com/youtube/v3/search?q="+s+"&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew"
+        },
+        properties: {
+          items: {
+            type: Array,
+            notify: true,
+          },
+          search_url: {
+            type: String,
+            computed: 'computeUrl(search)'
+          }
+        },
+        ready: function() {
+        }
+      });
+    })();
+  </script>
+
+</dom-module>

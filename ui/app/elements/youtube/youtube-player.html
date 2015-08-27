@@ -1,0 +1,90 @@
+<dom-module id="youtube-player" attributes="item">
+  <style>
+    :host {
+      display: block;
+  }
+  img {
+    float:left;
+    width: 150px;
+  }
+  hideit {
+    display: none;
+  }
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+  }
+  google-youtube {
+    position: fixed;
+    right: 40px;
+  }
+  #playToggler {
+    float:left;
+  }
+</style>
+<template>
+  <iron-signals on-iron-signal-playyoutubevideo="play"></iron-signals>
+
+  <paper-material class="footer" elevation="5">
+    <paper-fab id="playToggler" icon="{{play_icon}}"></paper-fab>
+    <google-youtube id="yt-pl"
+                  video-id="{{vid}}"
+                  height="70px"
+                  width="100px"
+                  state="{{state}}"
+                  chromeless="true"
+                  autoplay="1">
+    </google-youtube>
+  </paper-material>
+
+</template>
+
+<script>
+  (function () {
+    Polymer({
+      is: 'youtube-player',
+      properties: {
+        vid: {
+          type: String,
+          notify: true,
+          value: ""
+        },
+        state: {
+          type: Number,
+          notify: true,
+          value: 0
+        },
+        play_icon: {
+          type: String,
+          computed: 'computePlayIcon(state)'
+        }
+      },
+      attached: function() {
+        var that = this
+        document.getElementById('playToggler').addEventListener('click', function(e) {
+          console.log("CLLLL")
+          this.playToggle()
+        }.bind(that))
+      },
+      playToggle: function() {
+        console.log(this, this.$, this.state, this.$.googleYouTube)
+        if(this.state != 2) { //PLAYING
+          document.getElementById("yt-pl").pause()
+        } else {
+          document.getElementById("yt-pl").play()
+        }
+      },
+      computePlayIcon: function(state) {
+        if(state != 1) return "av:play-arrow"
+        else return "av:pause"
+      },
+      play: function(evt, data) {
+        this.vid = data
+      }
+    });
+  })();
+</script>
+
+</dom-module>
