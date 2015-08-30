@@ -2,6 +2,7 @@
   "name": "polymer-starter-kit",
   "private": true,
   "dependencies": {
+    "cytoscape": "~2.4.6",
     "google-youtube": "GoogleWebComponents/google-youtube#~1.1.2",
     "iron-ajax": "PolymerElements/iron-ajax#~1.0.4",
     "iron-elements": "PolymerElements/iron-elements#1.0.0",

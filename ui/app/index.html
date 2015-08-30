@@ -57,8 +57,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
   <!-- endreplace-->
-  <script src="libs/sigmajs/sigma.min.js"></script>
-  <script src="libs/sigmajs/plugins/sigma.parsers.json.min.js"></script>
+  <script src="bower_components/cytoscape/dist/cytoscape.js"></script>
   <script src="bower_components/pegasus/dist/pegasus.min.js"></script>
 </head>
 
@@ -70,9 +69,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Main Content -->
         <div>
-          <polymer-sigmajs >
+          <graph-viz>
             <media-search></media-search>
-          </polymer-sigmajs>
+          </graph-viz>
 
           <youtube-player></youtube-player>
         </div>
