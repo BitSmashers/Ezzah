@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="media-graph">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+
+    <graph-viz id="graphviz"></graph-viz>
+    <media-search id="mediasearch"></media-search>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'media-graph',
+      properties: { },
+      ready: function() {
+        this.addEventListener('addnode', function(e, d) {
+          this.$.graphviz.addNode(e.detail)
+        })
+        this.addEventListener('addnodes', function(e, d) {
+          this.$.graphviz.addNodes(e.detail)
+        })
+        this.addEventListener('nodeselect', function(e, d) {
+          this.$.mediasearch.artist_selected = e.detail.id
+        })
+      }
+    });
+  })();
+  </script>
+</dom-module>

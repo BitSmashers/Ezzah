@@ -12,28 +12,31 @@
   </style>
   <template>
 
-    <paper-material class="search_container" elevation="1">
-      <template is="dom-if" if="{{searching}}">
-        <paper-input on-keydown="keyDown" value="{{search::input}}"></paper-input>
-      </template>
-      <template is="dom-if" if="{{!searching}}">
-        <h3>{{search}}</h3>
-      </template>
-
-      <ul>
-        <template is="dom-repeat" items="{{results}}">
-          <media-result item="{{item}}"></media-result>
+    <div on-nodeselect="handleSelectNode">
+      <paper-material class="search_container" elevation="1">
+        <template is="dom-if" if="{{searching}}">
+          <paper-input on-keydown="keyDown" value="{{search::input}}"></paper-input>
         </template>
-      </ul>
-    </paper-material>
+        <template is="dom-if" if="{{!searching}}">
+          <h3>{{search}}</h3>
+          <paper-dialog-scrollable>
+            <ul>
+              <template is="dom-repeat" items="{{results}}">
+                <media-result item="{{item}}"></media-result>
+              </template>
+            </ul>
+          </paper-dialog-scrollable>
+        </template>
 
-    <iron-ajax
-       auto
-       url="{{search_url}}"
-       handle-as="json"
-       on-response="handleResults"
-       debounce-duration="300"></iron-ajax>
+      </paper-material>
 
+      <iron-ajax
+         auto
+         url="{{search_url}}"
+         handle-as="json"
+         on-response="handleResults"
+         debounce-duration="300"></iron-ajax>
+    </div>
   </template>
 
   <script>
@@ -61,6 +64,11 @@
           related_url: {
             type: String,
             computed: 'computeRealtedUrl()'
+          },
+          artist_selected : {
+            type: String,
+            notify: true,
+            observer: 'selectedUpdate'
           }
         },
         ready: function() {
@@ -72,39 +80,60 @@
             this.search_url = this.computeUrl(this.search)
           }
         },
+        handleSelectNode: function(evt, data) {
+          console.log(">>>>>>>>>>SELECTED")
+          console.log(evt)
+          console.log(data)
+        },
+        selectedUpdate: function() {
+          this.loadRelated(this.artist_selected)
+
+          var that = this
+          pegasus("http://localhost:9000/works/"+this.artist_selected).then(function(data) {
+            var lst = _(data.works).map(function(e) {
+              return { name: e.title, id: e.id }
+            }).value()
+
+            //console.log(lst)
+
+            that.results = lst
+          })
+        },
         handleResults: function(ev) {
           if(ev.detail.response != null) {
             var res = ev.detail.response["artist-list"].artist
-            if(res.length > 0)
-              this.fire('addnode', {
-                'label'  : res[0].name,
-                'id'  : res[0].id
-              })
+              if(res.length > 0) {
+                this.fire('addnode', {
+                  'label'  : res[0].name,
+                  'id'  : res[0].id
+                })
+
+                this.artist_selected = res[0].id
+              }
           }
         },
-        callbackEvent_addnode: function(data) {
-          console.log(data)
+        loadRelated: function(id) {
+          console.log(id)
 
           var that = this
-          pegasus("http://localhost:9000/related/"+data.id).then(function(data) {
+          pegasus("http://localhost:9000/related/"+id).then(function(data) {
             var lst = _(data.recordings).map(function(e) {
               return e["artist-credit"]
             })
             .flatten()
             .groupBy(function(e) { return e.artist.id })
             .map(function(e) { return e[0] })
-            .filter(function(e) { return e.artist.id != data.id })
+            .filter(function(e) { return e.artist.id != id })
             .value()
 
-            console.log("--RELATED_-")
+            console.log("--RELATED_-", lst)
             var nodes = lst.map ( function(s) {
-              console.log(s.artist.name)
               return { id: s.artist.id, label: s.artist.name }
             })
 
             that.fire('addnodes', {
               'nodes'  : nodes,
-              'parentId'  : data.id
+              'parentId'  : id
             })
           })
         }
