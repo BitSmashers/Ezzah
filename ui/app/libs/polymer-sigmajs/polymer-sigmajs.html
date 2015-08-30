@@ -1,0 +1,99 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="polymer-sigmajs">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      #graph {
+        position: absolute;
+        top:0; left:0; right:0; height: 100%;
+      }
+    </style>
+
+    <div on-addnode="handleAddNode" on-addnodes="handleAddNodes">
+      <div id="graph"></div>
+      <content></content>
+    </div>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'polymer-sigmajs',
+      ready: function() {
+        //this.fire('addnode', {'data': 'the data'})
+
+        this.g = new sigma(this.$.graph)
+
+        this.g.addCamera()
+          /*
+        .parsers.json('data.json', {
+          container: 'graph',
+          settings: {
+            defaultNodeColor: '#ec5148'
+          }
+        });
+        */
+      },
+
+      //listeners : { "addNode": "handleAddNode" },
+
+      handleAddNode: function(ev, data) {
+        this.pushNode(data.id, data.label, 300, 300, 5, "#000")
+
+        /*
+        sigma.misc.animation.camera(
+          this.g.camera,
+          {
+            x: n[this.g.camera.readPrefix + 'x'],
+            y: n[this.g.camera.readPrefix + 'y'],
+            ratio: 0.1
+          },
+          {duration: this.g.settings('animationsTime') || 300}
+        );
+        */
+
+        this.reDraw()
+
+        ev.srcElement["callbackEvent_"+ev.type](data)
+      },
+      reDraw: function() {
+        this.g.refresh()
+        this.g.renderers[0].resize()
+      },
+      handleAddNodes: function(ev, data) {
+        console.log("NODES ", data)
+
+        var that = this
+        data.nodes.map(function(e) {
+
+          var x = 100 + Math.random() * 400
+          var y = 100 + Math.random() * 400
+
+          that.pushNode(e.id, e.label, x, y, 5, 'black')
+
+          that.pushEdge(e.id+data.parentId, data.parentId, e.id)
+
+        })
+
+        this.reDraw()
+
+        this.g.startForceAtlas2();
+
+      },
+      pushNode(id, lbl, x, y, size, color) {
+        this.g.graph.addNode({id: id, label: lbl, x:x, y:y, size: size, color: color})
+      },
+      pushEdge(id, src, dest) {
+        this.g.graph.addEdge({id: id, source: src, target: dest})
+      },
+      properties: {
+      }
+    });
+  })();
+  </script>
+</dom-module>

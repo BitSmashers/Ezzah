@@ -1,0 +1,115 @@
+<dom-module id="media-search">
+  <style>
+    :host {
+      display: block;
+    }
+
+    .search_container {
+      margin-top: 50%;
+      padding: 20px;
+      background-color: white;
+    }
+  </style>
+  <template>
+
+    <paper-material class="search_container" elevation="1">
+      <template is="dom-if" if="{{searching}}">
+        <paper-input on-keydown="keyDown" value="{{search::input}}"></paper-input>
+      </template>
+      <template is="dom-if" if="{{!searching}}">
+        <h3>{{search}}</h3>
+      </template>
+
+      <ul>
+        <template is="dom-repeat" items="{{results}}">
+          <media-result item="{{item}}"></media-result>
+        </template>
+      </ul>
+    </paper-material>
+
+    <iron-ajax
+       auto
+       url="{{search_url}}"
+       handle-as="json"
+       on-response="handleResults"
+       debounce-duration="300"></iron-ajax>
+
+  </template>
+
+  <script>
+    (function () {
+      Polymer({
+        is: 'media-search',
+        computeUrl: function(s) {
+          //return "https://www.googleapis.com/media/v3/search?q="+s+"&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew"
+          return "http://localhost:9000/query/artist/"+s
+
+        },
+        properties: {
+          items: {
+            type: Array,
+            notify: true,
+          },
+          searching: {
+            type: Boolean,
+            value: true
+          },
+          search_url: {
+            type: String,
+            value: ''
+          },
+          related_url: {
+            type: String,
+            computed: 'computeRealtedUrl()'
+          }
+        },
+        ready: function() {
+        },
+        keyDown: function(ev) {
+          if(ev.keyCode == 13) {
+            console.log(ev)
+            this.searching = false
+            this.search_url = this.computeUrl(this.search)
+          }
+        },
+        handleResults: function(ev) {
+          if(ev.detail.response != null) {
+            var res = ev.detail.response["artist-list"].artist
+            if(res.length > 0)
+              this.fire('addnode', {
+                'label'  : res[0].name,
+                'id'  : res[0].id
+              })
+          }
+        },
+        callbackEvent_addnode: function(data) {
+          console.log(data)
+
+          var that = this
+          pegasus("http://localhost:9000/related/"+data.id).then(function(data) {
+            var lst = _(data.recordings).map(function(e) {
+              return e["artist-credit"]
+            })
+            .flatten()
+            .groupBy(function(e) { return e.artist.id })
+            .map(function(e) { return e[0] })
+            .filter(function(e) { return e.artist.id != data.id })
+            .value()
+
+            console.log("--RELATED_-")
+            var nodes = lst.map ( function(s) {
+              console.log(s.artist.name)
+              return { id: s.artist.id, label: s.artist.name }
+            })
+
+            that.fire('addnodes', {
+              'nodes'  : nodes,
+              'parentId'  : data.id
+            })
+          })
+        }
+      });
+    })();
+  </script>
+
+</dom-module>
