@@ -1,4 +1,4 @@
-<dom-module id="media-result" attributes="item">
+<dom-module id="media-result" attributes="elem">
   <style>
     :host {
       display: block;
@@ -10,9 +10,14 @@
   </style>
   <template>
     <paper-item>
-      <img src="{{item.artist}}" />
+      <img src="{{elem.artist}}" />
       <div>
-        <a href="" on-click="playVideo" data-vid$="{{item.id.videoId}}">{{item.name}}</a>
+        <a href="" on-click="playVideo" data-vid$="{{elem.id}}">{{elem.name}}</a>
+        <ul>
+          <template is="dom-repeat" items="{{elem.tracks}}">
+            <li>{{item.title}}</li>
+          </template>
+        </ul>
       </div>
     </paper-item>
   </template>
@@ -22,12 +27,12 @@
       Polymer({
         is: 'media-result',
         properties: {
-          item: {
+          elem: {
             type: Object,
-            observer: 'itemChanged'
+            observer: 'elemChanged'
           }
         },
-        itemChanged: function(i, e) {
+        elemChanged: function(i, e) {
           //console.log(i, e)
         },
         ready: function() {

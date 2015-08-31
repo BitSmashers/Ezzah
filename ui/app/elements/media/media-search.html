@@ -22,7 +22,7 @@
           <paper-dialog-scrollable>
             <ul>
               <template is="dom-repeat" items="{{results}}">
-                <media-result item="{{item}}"></media-result>
+                <li><media-result elem="{{item}}"></media-result></li>
               </template>
             </ul>
           </paper-dialog-scrollable>
@@ -49,7 +49,7 @@
 
         },
         properties: {
-          items: {
+          results: {
             type: Array,
             notify: true,
           },
@@ -89,14 +89,29 @@
           this.loadRelated(this.artist_selected)
 
           var that = this
-          pegasus("http://localhost:9000/works/"+this.artist_selected).then(function(data) {
-            var lst = _(data.works).map(function(e) {
-              return { name: e.title, id: e.id }
+          pegasus("http://localhost:9000/releases/"+this.artist_selected).then(function(data) {
+            var lst = _(data.releases).map(function(e) {
+              return { name: e.title, id: e.id, tracks:
+                [{title : "NO TRACK"},
+                {title : "NO TRACK 2"}]}
             }).value()
 
-            //console.log(lst)
+            console.log("RELEASES", lst, this, that)
 
             that.results = lst
+
+            that.results.map(function(e) {
+              pegasus("http://localhost:9000/tracks/"+e.id).then(function(data) {
+                var idx = _.findIndex(that.results, function(x) { return x.id == e.id } )
+
+                var res = _.cloneDeep(that.results)//[idx]
+                res[idx].tracks = data.media[0].tracks
+                that.results = res
+
+                console.log("GOT TRACKS!!!", that.results)
+
+              })
+            })
           })
         },
         handleResults: function(ev) {
