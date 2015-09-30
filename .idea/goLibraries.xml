@@ -2,7 +2,9 @@
 <project version="4">
   <component name="GoLibraries">
     <option name="urls">
-      <set />
+      <set>
+        <option value="file://$PROJECT_DIR$/core" />
+      </set>
     </option>
   </component>
 </project>
