@@ -11,3 +11,6 @@ Launch the ui:
 
 Go into `ui/` folder, `npm install && bower install && gulp serve`
 
+Dependencies : 
+Neo4J : http://neo4j.com/developer/go/
+Cypher : https://github.com/go-cq/cq
