@@ -1,7 +1,10 @@
 #!/bin/sh
 
 source ./env.toSource
-source ./env.toSource.local
+if [ -e ./env.toSource.local ]
+  then
+	source ./env.toSource.local
+fi
 
 # Check environment
 if [ "$NEODB_PATH" = "" ];
