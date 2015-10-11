@@ -3,13 +3,14 @@ package main
 
 import (
 	"os"
-	"io"
+	//"io"
 	"net/http"
 	"log"
-	"strings"
+	//"strings"
 	//"io/ioutil"
 	"github.com/jmcvetta/neoism"
 	"github.com/daaku/go.httpgzip"
+  "encoding/json"
 )
 
 var neo4jURL string
@@ -42,14 +43,33 @@ func ezzahHandler(w http.ResponseWriter, r *http.Request) {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
   //params := w.Vars(r)
-  name := strings.Replace(r.URL.Path, "/search/", "", 1)
-
+  //name := strings.Replace(r.URL.Path, "/search/", "", 1)
 
 	w.Header().Set("Content-Type", "application/json")
-  //results := Artist{"Swift Guad"}
-  body := "[{\"name\":\""+name+"\"}"
+  results := Results{ Artist{"Artist A", []Album{Album{"Album 1", []Song{Song{"song 1"}}}}} }
 
-  io.WriteString(w, body)
+  //body := "[{\"name\":\""+name+"\"}"
+
+	log.Println(results)
+
+  //res, e := json.Marshal(results)
+
+  //songs := []Song{Song{title: "song 1"}, Song{title: "another song"}}
+
+  song := Song{title: "song 1"}
+
+  json.NewEncoder(w).Encode(song)
+  str, _ := json.Marshal(song)
+
+  //rr, ee := json.Marshal()
+
+  log.Println(string(str))
+  log.Println(song)
+
+	//log.Println(string(res))
+	//log.Println(e)
+
+  //io.WriteString(w, string(str))
 }
 
 /*

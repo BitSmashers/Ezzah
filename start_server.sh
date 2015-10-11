@@ -32,4 +32,5 @@ go get -v github.com/jmcvetta/neoism
 echo "Go dependencies updated"
 
 # Run Ezzah binary
-go run core/src/main/main.go
+go build core/src/main/*.go
+go run core/src/main/*.go
