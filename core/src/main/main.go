@@ -3,14 +3,18 @@ package main
 
 import (
 	"os"
+	"io"
 	"net/http"
 	"log"
-	"io/ioutil"
+	"strings"
+	//"io/ioutil"
 	"github.com/jmcvetta/neoism"
 	"github.com/daaku/go.httpgzip"
 )
 
 var neo4jURL string
+var uiPath string
+var bowerPath string
 
 func main() {
 	initEnv()
@@ -18,6 +22,7 @@ func main() {
 	initBaseDbMock()
 	startServer()
 	log.Println("Db URL : ", neo4jURL)
+	log.Println("UI PATH : ", uiPath)
 }
 
 /*
@@ -26,19 +31,25 @@ func main() {
 
 func ezzahHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("form ", r.Form, " body", r.Body, " url ", r.URL, " postVal(\"user\") ", r.PostFormValue("user"))
-	w.Write([]byte("<h1>Ezzah</h1>"))
 
 	w.Header().Set("Content-Type", "text/html")
-	body, _ := ioutil.ReadFile("public/index.html")
-	w.Write(body)
+
+	//body, _ := ioutil.ReadFile(uiPath + "index.html")
+	//log.Println(body)
+	//w.Write(body)
+	w.Write([]byte("<h1>Ezzah</h1>"))
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
+  //params := w.Vars(r)
+  name := strings.Replace(r.URL.Path, "/search/", "", 1)
 
 
-	w.Header().Set("Content-Type", "text/html")
-	body, _ := ioutil.ReadFile("public/index.html")
-	w.Write(body)
+	w.Header().Set("Content-Type", "application/json")
+  //results := Artist{"Swift Guad"}
+  body := "[{\"name\":\""+name+"\"}"
+
+  io.WriteString(w, body)
 }
 
 /*
@@ -50,10 +61,26 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 func startServer() {
 	log.Println("Setting up server handlers")
 	serveMux := http.NewServeMux()
-	serveMux.HandleFunc("/", ezzahHandler)
-	serveMux.HandleFunc("/search", searchHandler)
+
+  serveMux.HandleFunc("/search/", searchHandler)
+	//log.Println(http.Dir("../ui").getAbsolutePath())
+
+  serveMux.HandleFunc("/bower_components/", bowerHandler)
+  serveMux.HandleFunc("/", uiHandler)
+
+	//serveMux.HandleFunc("/", ezzahHandler)
 
 	panic(http.ListenAndServe(":" + os.Getenv("PORT"), httpgzip.NewHandler(serveMux)))
+}
+
+func uiHandler(w http.ResponseWriter, r *http.Request) {
+  //log.Println("path:", r.URL.Path)
+  http.ServeFile(w, r, uiPath+r.URL.Path)
+}
+
+func bowerHandler(w http.ResponseWriter, r *http.Request) {
+  //log.Println("BOWER:", r.URL.Path)
+  http.ServeFile(w, r, bowerPath+r.URL.Path)
 }
 
 func initEnv(){
@@ -62,6 +89,8 @@ func initEnv(){
 	}else{
 		neo4jURL = "http://localhost:7474" // Default config provided by neo4J
 	}
+  uiPath = "ui/app/"
+  bowerPath = uiPath+"../"
 }
 
 func initDatabase() {
