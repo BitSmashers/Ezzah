@@ -11,7 +11,14 @@ Launch the ui:
 
 (You need npm, bower and gulp first)
 
-Go into `ui/` folder, `npm install && bower install && gulp serve`
+Getting started
+===============
+```
+./dependencies.sh
+# If it fails with error like this : ./dependencies.sh: line 32: gb: command not found
+# Re-launch the ./dependencies.sh script
+./start_server.sh
+```
 
 Dependencies : 
 Neo4J : http://neo4j.com/developer/go/
