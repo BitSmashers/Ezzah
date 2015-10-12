@@ -1,4 +1,6 @@
 # Ezzah
+[![Build Status](https://travis-ci.org/BitSmashers/Ezzah.svg?branch=master)](https://travis-ci.org/BitSmashers/Ezzah)
+
 Simple Multi-Media Collaborative Platform
 
 Easy way to bind media from multiple sources (Youtube, SoundCloud, Genius, Wikipedia...)
