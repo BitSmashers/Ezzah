@@ -13,6 +13,8 @@ cd ../
 
 cd core/
 
+rm -rf src/github.com/constabulary/gb
+
 go get github.com/constabulary/gb/...
 sleep 1
 
