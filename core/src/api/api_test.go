@@ -37,4 +37,6 @@ func TestJson(t *testing.T) {
     t.Error(jerr)
   }
 
+
+  t.Error("This should fail!")
 }
