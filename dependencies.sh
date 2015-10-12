@@ -4,9 +4,12 @@ if [ -e ./env.toSource.local ]
 	source ./env.toSource.local
 fi
 
-go get github.com/constabulary/gb/...
+cd ui/
+npm update && bower update
 
 cd core/
+
+go get github.com/constabulary/gb/...
 
 # Go dependencies
 echo "Downloading go dependencies...."
