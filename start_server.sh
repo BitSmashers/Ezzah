@@ -6,8 +6,6 @@ if [ -e ./env.toSource.local ]
 	source ./env.toSource.local
 fi
 
-alias gb="`pwd`/core/bin/gb"
-
 cd core
 
 # Check environment

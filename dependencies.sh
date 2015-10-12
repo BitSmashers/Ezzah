@@ -1,3 +1,13 @@
+source ./env.toSource
+if [ -e ./env.toSource.local ]
+  then
+	source ./env.toSource.local
+fi
+
+go get github.com/constabulary/gb/...
+
+cd core/
+
 # Go dependencies
 echo "Downloading go dependencies...."
 
