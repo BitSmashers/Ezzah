@@ -1,5 +1,5 @@
 language: go
-install: sh dependencies
+install: sh dependencies.sh
 script: sh tests.sh
 notifications:
   email: true
