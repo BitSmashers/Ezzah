@@ -1,3 +1,5 @@
-script: ./dependencies && ./tests.sh
+language: go
+install: sh dependencies
+script: sh tests.sh
 notifications:
   email: true
