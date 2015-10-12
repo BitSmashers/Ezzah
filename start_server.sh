@@ -17,6 +17,4 @@ if [ "$NEODB_PATH" = "" ];
 	echo "Starting Neo4J instance... $NEODB_PATH"
 fi
 
-gb build all
-
-./bin/main
+gb build all && ./bin/main

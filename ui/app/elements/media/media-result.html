@@ -12,10 +12,12 @@
     <paper-item>
       <img src="{{elem.artist}}" />
       <div>
-        <a href="" on-click="playVideo" data-vid$="{{elem.id}}">{{elem.name}}</a>
+        <h3>{{elem.title}}</h3>
         <ul>
           <template is="dom-repeat" items="{{elem.tracks}}">
-            <li>{{item.title}}</li>
+          <li>{{item.id}}
+              <a href="#" on-click="playVideo" data-vid$="{{item.id}}">{{item.title}}</a>
+            </li>
           </template>
         </ul>
       </div>
@@ -38,7 +40,13 @@
         ready: function() {
         },
         playVideo: function(evt) {
-          this.fire('iron-signal', {name: 'playyoutubevideo', data: evt.target.dataset.vid});
+          var vid_id = evt.target.dataset.vid
+            console.log(evt.target.attributes)
+            console.log(evt.target.dataset)
+          var that = this
+          pegasus("/youtube/"+vid_id).then(function(data) {
+            that.fire('iron-signal', {name: 'playyoutubevideo', data: data.id});
+          })
         }
       });
     })();

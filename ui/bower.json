@@ -14,10 +14,14 @@
     "paper-fab": "PolymerElements/paper-fab#~1.0.3",
     "paper-input": "PolymerElements/paper-input#~1.0.12",
     "pegasus": "~0.3.2",
-    "platinum-elements": "PolymerElements/platinum-elements#1.0.1"
+    "platinum-elements": "PolymerElements/platinum-elements#1.0.1",
+    "lodash-element": "~1.0.2"
   },
   "devDependencies": {
     "web-component-tester": "*",
     "test-fixture": "PolymerElements/test-fixture#^1.0.0"
+  },
+  "resolutions": {
+    "lodash": "^3.7.0"
   }
 }

@@ -44,7 +44,6 @@
       Polymer({
         is: 'media-search',
         computeUrl: function(s) {
-          //return "https://www.googleapis.com/media/v3/search?q="+s+"&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew"
           return "search/"+s
 
         },
@@ -89,7 +88,7 @@
           this.loadRelated(this.artist_selected)
 
           var that = this
-          pegasus("http://localhost:9000/releases/"+this.artist_selected).then(function(data) {
+          pegasus("/releases/"+this.artist_selected).then(function(data) {
             var lst = _(data.releases).map(function(e) {
               return { name: e.title, id: e.id, tracks:
                 [{title : "NO TRACK"},
@@ -101,7 +100,7 @@
             that.results = lst
 
             that.results.map(function(e) {
-              pegasus("http://localhost:9000/tracks/"+e.id).then(function(data) {
+              pegasus("/tracks/"+e.id).then(function(data) {
                 var idx = _.findIndex(that.results, function(x) { return x.id == e.id } )
 
                 var res = _.cloneDeep(that.results)//[idx]
@@ -116,22 +115,31 @@
         },
         handleResults: function(ev) {
           if(ev.detail.response != null) {
-            var res = ev.detail.response["artist-list"].artist
-              if(res.length > 0) {
-                this.fire('addnode', {
-                  'label'  : res[0].name,
-                  'id'  : res[0].id
-                })
+            var res = ev.detail.response
+            console.log(res)
+            if(res.length > 0) {
+              this.fire('addnode', {
+                'label'  : res[0].name,
+                'id'  : res[0].id
+              })
 
-                this.artist_selected = res[0].id
-              }
+              this.artist_selected = res[0].id
+
+                var lst = _(res[0].albums).map(function(e) {
+                  return { name: e.title, id: e.id, tracks: e.tracks }
+                }).value()
+
+                this.results = res[0].albums //lst
+
+                console.log("RELEASES", this.results)
+            }
           }
         },
         loadRelated: function(id) {
           console.log(id)
 
           var that = this
-          pegasus("http://localhost:9000/related/"+id).then(function(data) {
+          pegasus("/related/"+id).then(function(data) {
             var lst = _(data.recordings).map(function(e) {
               return e["artist-credit"]
             })

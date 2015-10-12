@@ -1,17 +1,20 @@
 package music
 
 type Song struct {
-  Title string `json:"title"`;
+  Id string `json:"id"`
+  Title string `json:"title"`
 }
 
 type Songs []Song
 
 type Album struct {
+  Id string `json:"id"`
   Title string `json:"title"`;
-  Songs `json:"songs"`;
+  Tracks Songs `json:"tracks"`;
 }
 
 type Artist struct {
+  Id string `json:"id"`
   Name string `json:"name"`;
   Albums []Album `json:"albums"`;
 }

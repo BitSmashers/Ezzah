@@ -1,0 +1,8 @@
+.gitignore
+core/bin
+core/pkg
+core/vendor
+
+*un~
+*swp
+*swo

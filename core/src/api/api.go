@@ -6,7 +6,7 @@ import (
   "os"
 	"github.com/daaku/go.httpgzip"
 	"log"
-	//"strings"
+	"strings"
 	//"io/ioutil"
   "encoding/json"
   . "music"
@@ -15,6 +15,7 @@ import (
 func StartServer() {
 	log.Println("Setting up server handlers")
 
+	log.Println(":" + os.Getenv("PORT"))
 	panic(http.ListenAndServe(":" + os.Getenv("PORT"), httpgzip.NewHandler(Handlers())))
 }
 
@@ -22,12 +23,13 @@ var uiPath string
 var bowerPath string
 
 func Handlers() (*http.ServeMux) {
-  uiPath = "ui/app/"
+  uiPath = "../ui/app/"
   bowerPath = uiPath+"../"
 
 	serveMux := http.NewServeMux()
 
   serveMux.HandleFunc("/search/", searchHandler)
+  serveMux.HandleFunc("/youtube/", youtubeHandler)
 	//log.Println(http.Dir("../ui").getAbsolutePath())
 
   serveMux.HandleFunc("/bower_components/", bowerHandler)
@@ -36,6 +38,21 @@ func Handlers() (*http.ServeMux) {
 	//serveMux.HandleFunc("/", ezzahHandler)
 
   return serveMux
+}
+
+type YoutubeLink struct {
+  Id string `json:"id"`
+}
+
+func youtubeHandler(w http.ResponseWriter, r *http.Request) {
+  //log.Println("path:", r.URL.Path)
+  parts := strings.Split(r.URL.Path, "/")
+  id := parts[len(parts) -1]
+  log.Println(id)
+
+  w.Header().Set("Content-Type", "application/json")
+  json.NewEncoder(w).Encode(YoutubeLink { "7tKVKG4jdQk" } )
+
 }
 
 func uiHandler(w http.ResponseWriter, r *http.Request) {
@@ -61,41 +78,25 @@ func ezzahHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-  //params := w.Vars(r)
-  //name := strings.Replace(r.URL.Path, "/search/", "", 1)
 
-	w.Header().Set("Content-Type", "application/json")
+  w.Header().Set("Content-Type", "application/json")
+
   results := Results{
     Artist{
-      Name: "Artist A",
+      Id: "artista",
+      Name: "Vald",
       Albums: []Album{
         Album{
-          Title: "Album 1",
-          Songs: []Song { Song{ Title: "song 1" } } } } } }
-
-  //results := Album { Title: "Album 1", Songs: Songs { Song{ Title: "song 1" } } }
-  //results := Song{ Title: "song 1" }
-
-  //body := "[{\"name\":\""+name+"\"}"
-
-	//log.Println(results)
-
-  //res, e := json.Marshal(results)
-
-  //songs := []Song{Song{title: "song 1"}, Song{title: "another song"}}
-
-  //song := Song{title: "song 1"}
+          Title: "NQNT",
+          Tracks: []Song { Song { Id: "nqnt-0", Title: "C'est Pour" },
+          Song { Id: "nqnt-1", Title: "Par Toutatis" },
+          Song { Id: "nqnt-2", Title: "Shoote un Ministre" } } },
+        Album{
+          Title: "NQNT 2",
+          Tracks: []Song { Song { Id: "nqnt2-0", Title: "Bonjour" },
+          Song { Id: "nqnt2-1",  Title: "Cartes sous l'coude" },
+          Song { Id: "nqnt2-2", Title: "Selfie" } } } } } }
 
   json.NewEncoder(w).Encode(results)
-  //str, _ := json.Marshal(results)
-
-  //rr, ee := json.Marshal()
-
-  //log.Println(string(str))
-
-	//log.Println(string(res))
-	//log.Println(e)
-
-  //io.WriteString(w, string(str))
 }
 
