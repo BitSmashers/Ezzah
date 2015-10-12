@@ -4,12 +4,17 @@ if [ -e ./env.toSource.local ]
 	source ./env.toSource.local
 fi
 
+echo $GOPATH
+
 cd ui/
-npm update && bower update
+bower update
+
+cd ../
 
 cd core/
 
 go get github.com/constabulary/gb/...
+sleep 1
 
 # Go dependencies
 echo "Downloading go dependencies...."
