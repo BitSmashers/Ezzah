@@ -10,6 +10,7 @@ import (
 	//"io/ioutil"
   "encoding/json"
   . "music"
+  "math/rand"
 )
 
 func StartServer() {
@@ -40,10 +41,6 @@ func Handlers() (*http.ServeMux) {
   return serveMux
 }
 
-type YoutubeLink struct {
-  Id string `json:"id"`
-}
-
 func youtubeHandler(w http.ResponseWriter, r *http.Request) {
   //log.Println("path:", r.URL.Path)
   parts := strings.Split(r.URL.Path, "/")
@@ -51,7 +48,21 @@ func youtubeHandler(w http.ResponseWriter, r *http.Request) {
   log.Println(id)
 
   w.Header().Set("Content-Type", "application/json")
-  json.NewEncoder(w).Encode(YoutubeLink { "7tKVKG4jdQk" } )
+
+  links:= []string{ "7tKVKG4jdQk",
+    "SWEbF6S0OGg",
+    "kuiUBLbDCUk",
+    "eDUWbZH4jLE",
+    "AZ87lf4gp1c",
+    "nFnJJuCxTU0",
+    "CY_HyJFnCHQ",
+    "43hhtOJzryM",
+    "fN8BK7zcoPU",
+    "x2zWw3c6cy0" }
+
+  lk := YoutubeLink { links[rand.Intn(10)] }
+
+  json.NewEncoder(w).Encode(lk)
 
 }
 
@@ -100,3 +111,6 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
   json.NewEncoder(w).Encode(results)
 }
 
+type YoutubeLink struct {
+  Id string `json:"id"`
+}

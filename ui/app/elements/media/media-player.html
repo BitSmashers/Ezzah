@@ -30,6 +30,7 @@
 
   <paper-material class="footer" elevation="5">
     <paper-fab id="playToggler" icon="{{playIcon}}"></paper-fab>
+    <paper-fab class="white" id="next" icon="av:skip-next"></paper-fab>
     <google-youtube id="yt-pl"
                   video-id="{{vid}}"
                   height="70px"
@@ -67,6 +68,10 @@
         document.getElementById('playToggler').addEventListener('click', function() {
           this.playToggle()
         }.bind(that))
+
+        document.getElementById('next').addEventListener('click', function() {
+          this.playNext()
+        }.bind(that))
       },
       playToggle: function() {
         console.log(this, this.$, this.state, this.$.googleYouTube)
@@ -75,6 +80,9 @@
         } else {
           document.getElementById('yt-pl').play()
         }
+      },
+      playNext: function() {
+        this.fire('iron-signal', {name: 'playlist-next'});
       },
       computePlayIcon: function(state) {
         if(state !== 1) return 'av:play-arrow'

@@ -16,7 +16,7 @@
         <ul>
           <template is="dom-repeat" items="{{elem.tracks}}">
           <li>{{item.id}}
-              <a href="#" on-click="playVideo" data-vid$="{{item.id}}">{{item.title}}</a>
+              <a href="#" on-click="addVideo" data-vid$="{{item.id}}">{{item.title}}</a>
             </li>
           </template>
         </ul>
@@ -39,14 +39,9 @@
         },
         ready: function() {
         },
-        playVideo: function(evt) {
+        addVideo: function(evt) {
           var vid_id = evt.target.dataset.vid
-            console.log(evt.target.attributes)
-            console.log(evt.target.dataset)
-          var that = this
-          pegasus("/youtube/"+vid_id).then(function(data) {
-            that.fire('iron-signal', {name: 'playyoutubevideo', data: data.id});
-          })
+          this.fire('iron-signal', {name: 'addvideo', data: vid_id});
         }
       });
     })();
