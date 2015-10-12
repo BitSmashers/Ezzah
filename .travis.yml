@@ -1,0 +1,4 @@
+language: go
+script: ./dependencies && ./tests.sh
+notifications:
+  email: false
