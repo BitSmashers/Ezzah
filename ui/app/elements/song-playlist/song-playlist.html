@@ -62,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log("PLAY A VID!")
         var that = this
         this.getYTid(this.list[this.current]).then(function(data) {
-          that.fire('iron-signal', {name: 'playyoutubevideo', data: data.id});
+          that.fire('iron-signal', {name: 'playyoutubevideo', data: data});
         })
       },
       getYTid: function(id) {

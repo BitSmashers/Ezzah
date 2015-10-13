@@ -3,6 +3,7 @@ package music
 type Song struct {
   Id string `json:"id"`
   Title string `json:"title"`
+  Artist string `json:"artist"`
 }
 
 type Songs []Song
@@ -19,10 +20,6 @@ type Artist struct {
   Details string `json:"details"`
   Albums []Album `json:"albums"`
   Country string `json:"country"`
-}
-
-func defaultCountry() (string) {
-  return "FR"
 }
 
 type Results []Artist

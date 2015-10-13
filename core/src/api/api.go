@@ -7,11 +7,12 @@ import (
 	"github.com/daaku/go.httpgzip"
 	"log"
 	"strings"
-	//"io/ioutil"
+	"io/ioutil"
   "encoding/json"
   //. "music"
-  "math/rand"
+  //"math/rand"
   "musicbrainz"
+  "net/url"
 )
 
 func StartServer() {
@@ -43,14 +44,80 @@ func Handlers() (*http.ServeMux) {
   return serveMux
 }
 
+
 func youtubeHandler(w http.ResponseWriter, r *http.Request) {
-  //log.Println("path:", r.URL.Path)
   parts := strings.Split(r.URL.Path, "/")
   id := parts[len(parts) -1]
-  log.Println(id)
+  //log.Println("path:", r.URL.Path)
+
+  song := musicbrainz.GetSongDetails(id)
+
+  query := song.Artist + " - " + song.Title
+  query = url.QueryEscape(query)
 
   w.Header().Set("Content-Type", "application/json")
 
+  url := "https://www.googleapis.com/youtube/v3/search?q="+query+"&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew"
+
+  log.Println("URL = "+url)
+
+  res, err := http.Get(url)
+
+  if err != nil {
+    panic(err)
+  }
+
+  defer res.Body.Close()
+
+  body, err := ioutil.ReadAll(res.Body)
+  if err != nil {
+    panic(err)
+  }
+
+  log.Println("Body is  : "+string(body))
+
+  var data YoutubeResults
+  err = json.Unmarshal(body, &data)
+
+  if err != nil {
+    panic(err)
+  }
+
+
+  json.NewEncoder(w).Encode(data.Items[0].Id.Id)
+
+
+  /*
+  {
+    "kind": "youtube#searchResult",
+    "etag": "\"oyKLwABI4napfYXnGO8jtXfIsfc/uQqJM05m7x2fGg5iPKDmoeFHYtk\"",
+    "id": {
+      "kind": "youtube#video",
+      "videoId": "00fmhI7dLrw"
+    },
+    "snippet": {
+      "publishedAt": "2015-10-12T19:59:56.000Z",
+      "channelId": "UCyqR7WkL8i1b6xtSssDmW9w",
+      "title": "What Do You Mean? - The Fitness Marshall - Cardio Hip-Hop",
+      "description": "Want more videos!? Support me on Patreon! https://www.patreon.com/TheFitnessMarshall Portion: MAIN WORKOUT FOLLOW Caleb Marshall On ...",
+      "thumbnails": {
+        "default": {
+          "url": "https://i.ytimg.com/vi/00fmhI7dLrw/default.jpg"
+        },
+        "medium": {
+          "url": "https://i.ytimg.com/vi/00fmhI7dLrw/mqdefault.jpg"
+        },
+        "high": {
+          "url": "https://i.ytimg.com/vi/00fmhI7dLrw/hqdefault.jpg"
+        }
+      },
+      "channelTitle": "TheFitnessMarshall",
+      "liveBroadcastContent": "none"
+    }
+  }
+  */
+
+  /*
   links:= []string{ "7tKVKG4jdQk",
     "SWEbF6S0OGg",
     "kuiUBLbDCUk",
@@ -63,9 +130,20 @@ func youtubeHandler(w http.ResponseWriter, r *http.Request) {
     "x2zWw3c6cy0" }
 
   lk := YoutubeLink { links[rand.Intn(10)] }
+  */
 
-  json.NewEncoder(w).Encode(lk)
+}
+type YoutubeId struct {
+  Id string `json:"videoId"`
+  Kind string `json:"kind"`
+}
 
+type YoutubeResultItem struct {
+  Id YoutubeId `json:"id"`
+}
+
+type YoutubeResults struct {
+  Items []YoutubeResultItem `json:"items"`
 }
 
 func uiHandler(w http.ResponseWriter, r *http.Request) {

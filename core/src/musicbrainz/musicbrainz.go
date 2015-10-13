@@ -46,6 +46,31 @@ func GetArtistAlbums(query string)([]Album) {
   return releasesToEzzahModels(data)
 }
 
+func GetSongDetails(id string)(Song) {
+  res, err := http.Get(mb_url+"recording/"+id+"?inc=artist-credits+isrcs+releases"+mb_url_format)
+  if err != nil {
+    panic(err)
+  }
+
+  defer res.Body.Close()
+
+  body, err := ioutil.ReadAll(res.Body)
+  if err != nil {
+    panic(err)
+  }
+
+  log.Println("Body is  : "+string(body))
+
+  var data MBRecording
+  err = json.Unmarshal(body, &data)
+
+  if err != nil {
+    panic(err)
+  }
+
+  return Song { Id: data.Id, Title: data.Title, Artist: data.ArtistCredit[0].Name }
+}
+
 func ArtistSearch(query string)([]Artist) {
   query = url.QueryEscape(query)
   log.Println("Ask for : "+artists_query_url(query))
@@ -82,8 +107,10 @@ func releasesToEzzahModels(res MBReleases)([]Album) {
   for i,el := range res.Releases {
 
     var tracks = make([]Song, len(el.Media[0].Tracks))
+
     for ii,elel := range el.Media[0].Tracks {
-      tracks[ii] = Song { elel.Id, elel.Title }
+
+      tracks[ii] = Song { Id: elel.NestedId.Id, Title: elel.Title }
     }
 
     arr[i] =  Album{
@@ -134,10 +161,25 @@ type MBRelease struct {
 type MBReleaseMedia struct {
   Tracks []MBTrack `json:"tracks"`
 }
-type MBTrack struct {
+
+type NestedId struct {
   Id string `json:"id"`
+}
+
+type MBTrack struct {
+  NestedId NestedId `json:"recording"`
   Title string `json:"title"`
   Number string `json:"number"`
+}
+
+type MBArtistCredit struct {
+  Name string `json:"name"`
+}
+
+type MBRecording struct {
+  Id string `json:"id"`
+  Title string `json:"title"`
+  ArtistCredit []MBArtistCredit `json:"artist-credit"`
 }
 
 type MBArtistResults struct {
