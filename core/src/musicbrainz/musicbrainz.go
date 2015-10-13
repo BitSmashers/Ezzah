@@ -83,7 +83,7 @@ func releasesToEzzahModels(res MBReleases)([]Album) {
 
     var tracks = make([]Song, len(el.Media[0].Tracks))
     for ii,elel := range el.Media[0].Tracks {
-      tracks[ii] = Song { elel.Id, el.Title }
+      tracks[ii] = Song { elel.Id, elel.Title }
     }
 
     arr[i] =  Album{

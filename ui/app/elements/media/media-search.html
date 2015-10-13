@@ -54,13 +54,15 @@
           return "search/"+s
         },
         selectArtist: function(e) {
-          console.log(e.target.getAttribute('data-artistid'))
-          var id = e.target.dataset.artistid
-            console.log(e)
-          console.log(e.target.dataset)
-          console.log(id)
+          var el = e.target
+            //console.log(el.getAttribute('data-artistid') )
+          while(el.getAttribute('data-artistid') == null)
+            el = el.parentNode
+          //var id = e.target.dataset.artistid
+              //console.log(e.target.dataset)
+          //console.log(id)
 
-          page('/artist/'+id)
+          page('/artist/'+el.getAttribute('data-artistid'))
         },
         flagClass: function(c) {
           return "flag "+c.toLowerCase()
