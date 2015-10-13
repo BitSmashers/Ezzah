@@ -31,6 +31,7 @@ func Handlers() (*http.ServeMux) {
 
 	serveMux := http.NewServeMux()
 
+  serveMux.HandleFunc("/song/", songHandler)
   serveMux.HandleFunc("/albums/", artistHandler)
   serveMux.HandleFunc("/search/", searchHandler)
   serveMux.HandleFunc("/youtube/", youtubeHandler)
@@ -212,4 +213,16 @@ func artistHandler(w http.ResponseWriter, r *http.Request) {
   log.Println("Searching for : "+query)
 
   json.NewEncoder(w).Encode(musicbrainz.GetArtistAlbums(query))
+}
+
+func songHandler(w http.ResponseWriter, r *http.Request) {
+
+  w.Header().Set("Content-Type", "application/json")
+
+  parts := strings.Split(r.URL.Path, "/")
+  query := parts[len(parts) -1]
+
+  log.Println("Searching for : "+query)
+
+  json.NewEncoder(w).Encode(musicbrainz.GetSongDetails(query))
 }

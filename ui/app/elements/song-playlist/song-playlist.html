@@ -15,10 +15,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
+        width: 100%;
+        padding: 30px;
       }
+      .current_playlist .title {
+        width: 100%;
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-weight: bolder;
+        font-size: x-large;
+        color: white;
+        background-color: #26A65B;
+      }
+      .current_playlist .active {
+        font-weight: bold;
+      }
+
     </style>
     <iron-signals on-iron-signal-addvideo="addVideo"></iron-signals>
     <iron-signals on-iron-signal-playlist-next="nextVideo"></iron-signals>
+
+    <paper-material elevation="2" class="current_playlist">
+      <div class="title">Playlist</div>
+      <ul>
+        <template is="dom-repeat" items="{{list}}">
+          <paper-item class="result-line">
+            <paper-item-body>
+
+            <template is="dom-if" if="{{isPlaying(item.id)}}"> [>] </template>
+
+            <span class$="{{itemClass(item.id)}}">{{item.title}}</span>
+            </paper-item-body>
+          </paper-item>
+        </template>
+      </ul>
+    </paper-material>
   </template>
   <script>
   (function() {
@@ -28,40 +60,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'song-playlist',
 
       properties: {
-        list: {
-          type: Array,
-          value: [],
-          notify: true
-        },
         current: {
           type: Number,
-          value: -1
+          value: -1,
+          notify: true
+        },
+        list: {
+          type: Array,
+          notify: true
         }
       },
+      ready: function() {
+        this.list = []
+      },
+      itemClass: function(id) {
+        console.log("item-class", this.current, this.list[this.current], id)
+        return (typeof this.list[this.current] != 'undefined' && this.list[this.current].id == id) ? "active" : "inactive"
+      },
+      isPlaying: function(id) {
+        console.log("isplayed", this.current, this.list[this.current], id)
+        return (typeof this.list[this.current] != 'undefined' && this.list[this.current].id == id)
+      },
       nextVideo: function(e) {
-        console.log("NEXT VIDEO")
-        this.current++
+        this.current+=1
+        console.log("NEXT VIDEO", this.current)
         if(this.current <= this.list.length - 1)
           this.play()
       },
       addVideo: function(e) {
         console.log("DQWDQWD")
         console.log(e.detail)
+        console.log(this.list)
 
-        this.list.push(e.detail)
+        var that = this
+        pegasus("/song/"+e.detail).then(function(data) {
+          that.push('list', { id: data.id, title: data.title, artist: data.artist })
 
-        if(this.current == -1)
-          this.current = 0
+          if(that.current == -1)
+            that.current = 0
 
-        if(this.current == this.list.length - 1)
-          this.play()
+          if(that.current == that.list.length - 1)
+            that.play()
 
-        console.log("Playlist =", this.list)
+          console.log("Playlist =", that.list)
+
+        })
+
       },
       play: function() {
         console.log("PLAY A VID!")
         var that = this
-        this.getYTid(this.list[this.current]).then(function(data) {
+        this.getYTid(this.list[this.current].id).then(function(data) {
           that.fire('iron-signal', {name: 'playyoutubevideo', data: data});
         })
       },

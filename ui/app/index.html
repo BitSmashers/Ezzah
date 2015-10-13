@@ -78,26 +78,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-router>
         -->
 
-        <a href="/"><paper-icon-button icon="home"></paper-icon-button></a>
+        <a href="/" style="position:absolute"><paper-icon-button icon="home"></paper-icon-button></a>
 
-        <iron-pages attr-for-selected="data-route" selected="{{route}}">
+        <div style="display: flex; align-items: stretch;">
+          <iron-pages attr-for-selected="data-route" selected="{{route}}" style="width:100%; padding: 30px;" class="style-scope">
 
-            <section data-route="home">
-              <!--<a data-route="users" href="/artist/das"> <span>Users</span> </a>-->
-              <media-search></media-search>
-            </section>
+              <section data-route="home">
+                <!--<a data-route="users" href="/artist/das"> <span>Users</span> </a>-->
+                <media-search></media-search>
+              </section>
 
-            <section data-route="artist">
-
-              <span>{{params.id}}</span>
-              <artist-page artistid="{{params.id}}"></artist-page>
-            </section>
-        </iron-pages>
+              <section data-route="artist">
+                <artist-page artistid="{{params.id}}"></artist-page>
+              </section>
+          </iron-pages>
+          <song-playlist></song-playlist>
+        </div>
 
 
 
         <youtube-player></youtube-player>
-        <song-playlist></song-playlist>
   </template>
 
   <!-- build:js scripts/app.js -->
