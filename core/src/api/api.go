@@ -9,8 +9,9 @@ import (
 	"strings"
 	//"io/ioutil"
   "encoding/json"
-  . "music"
+  //. "music"
   "math/rand"
+  "musicbrainz"
 )
 
 func StartServer() {
@@ -29,6 +30,7 @@ func Handlers() (*http.ServeMux) {
 
 	serveMux := http.NewServeMux()
 
+  serveMux.HandleFunc("/albums/", artistHandler)
   serveMux.HandleFunc("/search/", searchHandler)
   serveMux.HandleFunc("/youtube/", youtubeHandler)
 	//log.Println(http.Dir("../ui").getAbsolutePath())
@@ -92,6 +94,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
   w.Header().Set("Content-Type", "application/json")
 
+  /*
   results := Results{
     Artist{
       Id: "artista",
@@ -107,10 +110,28 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
           Tracks: []Song { Song { Id: "nqnt2-0", Title: "Bonjour" },
           Song { Id: "nqnt2-1",  Title: "Cartes sous l'coude" },
           Song { Id: "nqnt2-2", Title: "Selfie" } } } } } }
+          */
 
-  json.NewEncoder(w).Encode(results)
+  parts := strings.Split(r.URL.Path, "/")
+  query := parts[len(parts) -1]
+
+  log.Println("Searching for : "+query)
+
+  json.NewEncoder(w).Encode(musicbrainz.ArtistSearch(query))
 }
 
 type YoutubeLink struct {
   Id string `json:"id"`
+}
+
+func artistHandler(w http.ResponseWriter, r *http.Request) {
+
+  w.Header().Set("Content-Type", "application/json")
+
+  parts := strings.Split(r.URL.Path, "/")
+  query := parts[len(parts) -1]
+
+  log.Println("Searching for : "+query)
+
+  json.NewEncoder(w).Encode(musicbrainz.GetArtistAlbums(query))
 }

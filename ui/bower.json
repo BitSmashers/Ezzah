@@ -15,7 +15,10 @@
     "paper-input": "PolymerElements/paper-input#~1.0.12",
     "pegasus": "~0.3.2",
     "platinum-elements": "PolymerElements/platinum-elements#1.0.1",
-    "lodash-element": "~1.0.2"
+    "lodash-element": "~1.0.2",
+    "world-flags-sprite": "*",
+    "more-routing": "PolymerLabs/more-routing#~1.0.0",
+    "app-router": "~2.6.1"
   },
   "devDependencies": {
     "web-component-tester": "*",

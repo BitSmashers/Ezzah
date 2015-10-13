@@ -5,29 +5,36 @@
     }
 
     .search_container {
-      margin-top: 50%;
       padding: 20px;
       background-color: white;
+    }
+
+    .result-line {
+      padding-bottom: 10px;
+      cursor: pointer;
+    }
+    .result-line:hover {
+      background-color: #E8E8E8;
     }
   </style>
   <template>
 
     <div on-nodeselect="handleSelectNode">
       <paper-material class="search_container" elevation="1">
-        <template is="dom-if" if="{{searching}}">
-          <paper-input on-keydown="keyDown" value="{{search::input}}"></paper-input>
-        </template>
-        <template is="dom-if" if="{{!searching}}">
-          <h3>{{search}}</h3>
-          <paper-dialog-scrollable>
-            <ul>
-              <template is="dom-repeat" items="{{results}}">
-                <li><media-result elem="{{item}}"></media-result></li>
-              </template>
-            </ul>
-          </paper-dialog-scrollable>
-        </template>
-
+        <paper-input on-keydown="keyDown" value="{{search::input}}"></paper-input>
+        <ul>
+          <template is="dom-repeat" items="{{artists_results}}">
+            <paper-item class="result-line" on-click="selectArtist" data-artistid$="{{item.id}}">
+              <paper-item-body two-line>
+                  <div>{{item.name}}</div>
+                  <div secondary class="f16">
+                    <span class$="{{flagClass(item.country)}}"></span>
+                    <span>{{item.details}}</span>
+                  </div>
+                </paper-body-item>
+              </paper-item>
+          </template>
+        </ul>
       </paper-material>
 
       <iron-ajax
@@ -45,16 +52,23 @@
         is: 'media-search',
         computeUrl: function(s) {
           return "search/"+s
+        },
+        selectArtist: function(e) {
+          console.log(e.target.getAttribute('data-artistid'))
+          var id = e.target.dataset.artistid
+            console.log(e)
+          console.log(e.target.dataset)
+          console.log(id)
 
+          page('/artist/'+id)
+        },
+        flagClass: function(c) {
+          return "flag "+c.toLowerCase()
         },
         properties: {
-          results: {
+          artists_results: {
             type: Array,
             notify: true,
-          },
-          searching: {
-            type: Boolean,
-            value: true
           },
           search_url: {
             type: String,
@@ -75,7 +89,6 @@
         keyDown: function(ev) {
           if(ev.keyCode == 13) {
             console.log(ev)
-            this.searching = false
             this.search_url = this.computeUrl(this.search)
           }
         },
@@ -97,17 +110,17 @@
 
             console.log("RELEASES", lst, this, that)
 
-            that.results = lst
+            that.artists_results = lst
 
-            that.results.map(function(e) {
+            that.artists_results.map(function(e) {
               pegasus("/tracks/"+e.id).then(function(data) {
-                var idx = _.findIndex(that.results, function(x) { return x.id == e.id } )
+                var idx = _.findIndex(that.artists_results, function(x) { return x.id == e.id } )
 
-                var res = _.cloneDeep(that.results)//[idx]
+                var res = _.cloneDeep(that.artists_results)//[idx]
                 res[idx].tracks = data.media[0].tracks
-                that.results = res
+                that.artists_results = res
 
-                console.log("GOT TRACKS!!!", that.results)
+                console.log("GOT TRACKS!!!", that.artists_results)
 
               })
             })
@@ -118,6 +131,8 @@
             var res = ev.detail.response
             console.log(res)
             if(res.length > 0) {
+              this.artists_results = res
+
               this.fire('addnode', {
                 'label'  : res[0].name,
                 'id'  : res[0].id
