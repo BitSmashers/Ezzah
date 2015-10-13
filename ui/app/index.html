@@ -55,6 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <link rel="import" href="bower_components/lodash-element/lodash.js.html">
 
+  <link rel="stylesheet" href="bower_components/world-flags-sprite/stylesheets/flags16.css">
 
   <!-- endreplace-->
   <script src="bower_components/cytoscape/dist/cytoscape.js"></script>
@@ -67,16 +68,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template is="dom-bind" id="app">
       <!-- Main Area -->
       <paper-header-panel main condenses keep-condensed-header>
-
-        <!-- Main Content -->
-        <div>
-          <media-graph></media-graph>
-          <youtube-player></youtube-player>
-          <song-playlist></song-playlist>
-        </div>
       </paper-header-panel>
 
+        <!-- Main Content -->
+        <!--
+        <app-router>
+          <app-route path="/" import="pages/home-page.html" element="home-page"></app-route>
+          <app-route path="/artist/:artistId" import="/pages/artist.html"></app-route>
+        </app-router>
+        -->
 
+
+        <iron-pages attr-for-selected="data-route" selected="{{route}}">
+
+            <section data-route="home">
+              <!--<a data-route="users" href="/artist/das"> <span>Users</span> </a>-->
+              <media-search></media-search>
+            </section>
+
+            <section data-route="artist">
+
+              <span>{{params.id}}</span>
+              <artist-page artistid="{{params.id}}"></artist-page>
+            </section>
+        </iron-pages>
+
+
+
+        <!--<youtube-player></youtube-player>-->
+        <!--<song-playlist></song-playlist>-->
   </template>
 
   <!-- build:js scripts/app.js -->

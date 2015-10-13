@@ -15,8 +15,14 @@ type Album struct {
 
 type Artist struct {
   Id string `json:"id"`
-  Name string `json:"name"`;
-  Albums []Album `json:"albums"`;
+  Name string `json:"name"`
+  Details string `json:"details"`
+  Albums []Album `json:"albums"`
+  Country string `json:"country"`
+}
+
+func defaultCountry() (string) {
+  return "FR"
 }
 
 type Results []Artist

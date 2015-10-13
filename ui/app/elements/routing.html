@@ -23,8 +23,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.route = 'users';
     });
 
-    page('/users/:name', function (data) {
-      app.route = 'user-info';
+    page('/artist/:id', function (data) {
+      app.route = 'artist';
       app.params = data.params;
     });
 
