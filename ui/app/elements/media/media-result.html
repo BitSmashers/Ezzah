@@ -7,20 +7,19 @@
       float:left;
       width: 150px;
     }
+    .song {
+      cursor: pointer;
+    }
   </style>
   <template>
-    <paper-item>
-      <div>
-        <h3>{{elem.title}}</h3>
-        <ul>
-          <template is="dom-repeat" items="{{elem.tracks}}">
-          <li>{{item.id}}
-              <a href="#" on-click="addVideo" data-vid$="{{item.id}}">{{item.title}}</a>
-            </li>
-          </template>
-        </ul>
-      </div>
-    </paper-item>
+    <div><h3>{{elem.title}}</h3></div>
+    <template is="dom-repeat" items="{{elem.tracks}}">
+      <paper-item class="result-line">
+        <paper-item-body>
+        <span class="song" on-click="addVideo" data-vid$="{{item.id}}">{{item.title}}</span>
+        </paper-item-body>
+      </paper-item>
+    </template>
   </template>
 
   <script>

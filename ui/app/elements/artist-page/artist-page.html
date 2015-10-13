@@ -21,16 +21,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             auto
             url="{{ajaxUrl}}"
             handle-as="json"
-            lastResponse="xhrres"
+            last-response="{{xhrres}}"
             debounce-duration="300"></iron-ajax>
 
     <paper-material elevation="1">
-      <span>{{artistid}}</span>
-      <code>{{xhrres}}</code>
+    <ul>
       <template is="dom-repeat" items="{{xhrres}}">
-      <h1>LOOP</h1>
         <media-result elem="{{item}}"></media-result>
       </template>
+    </ul>
     </paper-material>
   </template>
   <script>
