@@ -2,23 +2,24 @@
   "name": "polymer-starter-kit",
   "private": true,
   "dependencies": {
+    "app-router": "~2.6.1",
     "cytoscape": "~2.4.6",
     "google-youtube": "GoogleWebComponents/google-youtube#~1.1.2",
     "iron-ajax": "PolymerElements/iron-ajax#~1.0.4",
     "iron-elements": "PolymerElements/iron-elements#1.0.0",
     "iron-signals": "PolymerElements/iron-signals#~1.0.2",
+    "lodash-element": "~1.0.2",
     "lodash-import": "~0.0.2",
+    "more-routing": "PolymerLabs/more-routing#~1.0.0",
     "neon-elements": "PolymerElements/neon-elements#1.0.0",
     "page": "visionmedia/page.js#~1.6.3",
     "paper-elements": "PolymerElements/paper-elements#1.0.1",
     "paper-fab": "PolymerElements/paper-fab#~1.0.3",
+    "paper-header-panel": "PolymerElements/paper-header-panel#~1.0.5",
     "paper-input": "PolymerElements/paper-input#~1.0.12",
     "pegasus": "~0.3.2",
     "platinum-elements": "PolymerElements/platinum-elements#1.0.1",
-    "lodash-element": "~1.0.2",
-    "world-flags-sprite": "*",
-    "more-routing": "PolymerLabs/more-routing#~1.0.0",
-    "app-router": "~2.6.1"
+    "world-flags-sprite": "*"
   },
   "devDependencies": {
     "web-component-tester": "*",

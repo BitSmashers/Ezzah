@@ -1,4 +1,4 @@
-<dom-module id="media-search">
+<dom-module id="media-search" attributes="search_term">
   <style>
     :host {
       display: block;
@@ -20,8 +20,12 @@
   <template>
 
     <div on-nodeselect="handleSelectNode">
-      <paper-material class="search_container" elevation="1">
+<!--
+      <paper-material class="search_input" elevation="1">
         <paper-input on-keydown="keyDown" value="{{search::input}}"></paper-input>
+      </paper-material>
+-->
+      <paper-material class="search_container" elevation="1">
         <ul>
           <template is="dom-repeat" items="{{artists_results}}">
             <paper-item class="result-line" on-click="selectArtist" data-artistid$="{{item.id}}">
@@ -74,7 +78,8 @@
           },
           search_url: {
             type: String,
-            value: ''
+            value: '',
+            computed: 'computeUrl(search_term)'
           },
           related_url: {
             type: String,
@@ -87,12 +92,6 @@
           }
         },
         ready: function() {
-        },
-        keyDown: function(ev) {
-          if(ev.keyCode == 13) {
-            console.log(ev)
-            this.search_url = this.computeUrl(this.search)
-          }
         },
         handleSelectNode: function(evt, data) {
           console.log(">>>>>>>>>>SELECTED")

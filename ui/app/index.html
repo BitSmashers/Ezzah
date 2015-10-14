@@ -67,37 +67,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
       <!-- Main Area -->
-      <paper-header-panel main condenses keep-condensed-header>
+      <paper-header-panel class="green">
+        <div class="paper-header header">
+          <header-search search_term="{{search_term}}"></header-search>
+        </div>
+        <div class="">
+
+
+          <div style="display: flex; align-items: stretch;">
+            <iron-pages attr-for-selected="data-route" selected="{{route}}" style="width:100%; padding: 30px;" class="style-scope">
+
+                <section data-route="home">
+                  <!--<a data-route="users" href="/artist/das"> <span>Users</span> </a>-->
+                  <media-search search_term="{{search_term}}"></media-search>
+                </section>
+
+                <section data-route="artist">
+                  <artist-page artistid="{{params.id}}"></artist-page>
+                </section>
+            </iron-pages>
+            <song-playlist></song-playlist>
+          </div>
+        <youtube-player></youtube-player>
+        </div>
       </paper-header-panel>
 
-        <!-- Main Content -->
-        <!--
-        <app-router>
-          <app-route path="/" import="pages/home-page.html" element="home-page"></app-route>
-          <app-route path="/artist/:artistId" import="/pages/artist.html"></app-route>
-        </app-router>
-        -->
-
-        <a href="/" style="position:absolute"><paper-icon-button icon="home"></paper-icon-button></a>
-
-        <div style="display: flex; align-items: stretch;">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}" style="width:100%; padding: 30px;" class="style-scope">
-
-              <section data-route="home">
-                <!--<a data-route="users" href="/artist/das"> <span>Users</span> </a>-->
-                <media-search></media-search>
-              </section>
-
-              <section data-route="artist">
-                <artist-page artistid="{{params.id}}"></artist-page>
-              </section>
-          </iron-pages>
-          <song-playlist></song-playlist>
-        </div>
-
-
-
-        <youtube-player></youtube-player>
   </template>
 
   <!-- build:js scripts/app.js -->
