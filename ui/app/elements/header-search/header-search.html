@@ -26,9 +26,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: auto;
         width: 70%;
       }
+      .home_button {
+        position:absolute;
+        color: black;
+      }
+      .home_button paper-icon-button {
+        width: 80px;
+      }
     </style>
     <paper-material class="search_input" elevation="1">
-      <a href="/" style="position:absolute"><paper-icon-button icon="home"></paper-icon-button></a>
+      <a href="/" class="home_button"><paper-icon-button icon="home"></paper-icon-button></a>
       <paper-input on-keydown="keyDown" class="input" placeholder="Search Artist..." id="search_field"></paper-input>
 
     </paper-material>

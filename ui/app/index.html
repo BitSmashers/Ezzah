@@ -67,30 +67,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
       <!-- Main Area -->
-      <paper-header-panel class="green">
-        <div class="paper-header header">
-          <header-search search_term="{{search_term}}"></header-search>
-        </div>
-        <div class="">
+      <paper-drawer-panel right-drawer>
 
+        <song-playlist drawer></song-playlist>
 
-          <div style="display: flex; align-items: stretch;">
-            <iron-pages attr-for-selected="data-route" selected="{{route}}" style="width:100%; padding: 30px;" class="style-scope">
-
-                <section data-route="home">
-                  <!--<a data-route="users" href="/artist/das"> <span>Users</span> </a>-->
-                  <media-search search_term="{{search_term}}"></media-search>
-                </section>
-
-                <section data-route="artist">
-                  <artist-page artistid="{{params.id}}"></artist-page>
-                </section>
-            </iron-pages>
-            <song-playlist></song-playlist>
+        <paper-header-panel main>
+          <div class="paper-header header">
+            <header-search search_term="{{search_term}}"></header-search>
           </div>
-        <youtube-player></youtube-player>
-        </div>
-      </paper-header-panel>
+          <div class="">
+
+
+            <div style="display: flex; align-items: stretch;">
+              <iron-pages attr-for-selected="data-route" selected="{{route}}" style="width:100%; padding: 30px;" class="style-scope">
+
+                  <section data-route="home">
+                    <!--<a data-route="users" href="/artist/das"> <span>Users</span> </a>-->
+                    <media-search search_term="{{search_term}}"></media-search>
+                  </section>
+
+                  <section data-route="artist">
+                    <artist-page artistid="{{params.id}}"></artist-page>
+                  </section>
+              </iron-pages>
+            </div>
+          <youtube-player></youtube-player>
+          </div>
+        </paper-header-panel>
+      </paper-drawer-panel>
 
   </template>
 

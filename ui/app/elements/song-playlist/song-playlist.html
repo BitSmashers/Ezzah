@@ -16,7 +16,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
         width: 100%;
-        padding: 30px;
+      }
+      .current_playlist {
+        width: 100%;
+        position: absolute;
+        bottom: 0px;
+        top: 0px;
+        overflow-y: scroll;
       }
       .current_playlist .title {
         width: 100%;
@@ -41,14 +47,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <span>{{list}}</span>
       <ul>
         <template is="dom-repeat" items="{{list}}">
-          <paper-item class="result-line">
+          <paper-item>
             <paper-item-body>
-
             <template is="dom-if" if="{{item.playing}}"> ▶ </template>
 
             <span class$="{{entryClass(item.playing)}}"><span>{{item.title}}</span> - <span>{{item.artist}}</span></span>
             </paper-item-body>
           </paper-item>
+          <hr/>
         </template>
       </ul>
     </paper-material>
