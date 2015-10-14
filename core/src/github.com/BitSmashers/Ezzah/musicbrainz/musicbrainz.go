@@ -3,7 +3,7 @@ package musicbrainz
 import "time"
 import "net/http"
 import "io/ioutil"
-import . "music"
+import . "github.com/BitSmashers/Ezzah/music"
 import "encoding/json"
 import "log"
 import "net/url"

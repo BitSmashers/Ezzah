@@ -11,7 +11,7 @@ import (
 	"github.com/jmcvetta/neoism"
 	//"github.com/daaku/go.httpgzip"
   //"encoding/json"
-  "api"
+  "github.com/BitSmashers/Ezzah/api"
 )
 
 var neo4jURL string

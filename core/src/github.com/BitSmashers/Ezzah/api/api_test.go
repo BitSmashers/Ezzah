@@ -5,7 +5,7 @@ import "net/http/httptest"
 import "fmt"
 import "net/http"
 import "io/ioutil"
-import . "music"
+import . "github.com/BitSmashers/Ezzah/music"
 import "encoding/json"
 
 var (

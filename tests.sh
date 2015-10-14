@@ -6,4 +6,4 @@ fi
 
 cd core/
 
-gb test api
+go test github.com/BitSmashers/Ezzah/...

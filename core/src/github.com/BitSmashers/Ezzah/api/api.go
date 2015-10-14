@@ -10,9 +10,8 @@ import (
 	"io/ioutil"
   "encoding/json"
   //. "music"
-  //"math/rand"
-  "musicbrainz"
   "net/url"
+  "github.com/BitSmashers/Ezzah/musicbrainz"
 )
 
 func StartServer() {

@@ -3,6 +3,14 @@ core/bin
 core/pkg
 core/vendor
 
+core/src/*
+!core/src/github.com
+core/src/github.com/*
+!core/src/github.com/BitSmashers
+core/src/github.com/BitSmashers/*
+!core/src/github.com/BitSmashers/Ezzah
+!core/src/github.com/BitSmashers/Ezzah/*
+
 *un~
 *swp
 *swo
