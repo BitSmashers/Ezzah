@@ -38,14 +38,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <paper-material elevation="2" class="current_playlist">
       <div class="title">Playlist</div>
+      <span>{{list}}</span>
       <ul>
         <template is="dom-repeat" items="{{list}}">
           <paper-item class="result-line">
             <paper-item-body>
 
-            <template is="dom-if" if="{{isPlaying(item.id)}}"> [>] </template>
+            <template is="dom-if" if="{{item.playing}}"> ▶ </template>
 
-            <span class$="{{itemClass(item.id)}}">{{item.title}}</span>
+            <span class$="{{entryClass(item.playing)}}"><span>{{item.title}}</span> - <span>{{item.artist}}</span></span>
             </paper-item-body>
           </paper-item>
         </template>
@@ -73,46 +74,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function() {
         this.list = []
       },
-      itemClass: function(id) {
-        console.log("item-class", this.current, this.list[this.current], id)
-        return (typeof this.list[this.current] != 'undefined' && this.list[this.current].id == id) ? "active" : "inactive"
-      },
-      isPlaying: function(id) {
-        console.log("isplayed", this.current, this.list[this.current], id)
-        return (typeof this.list[this.current] != 'undefined' && this.list[this.current].id == id)
+      entryClass: function(isp) {
+        return isp ? 'active' : ''
       },
       nextVideo: function(e) {
-        this.current+=1
-        console.log("NEXT VIDEO", this.current)
-        if(this.current <= this.list.length - 1)
+        var idx = _.findIndex(this.list, function(e) { return e.playing })
+
+        if(idx != -1) {
+          this.set('list.'+idx+'.playing', false)
+        }
+        idx = idx + 1
+
+        if(idx < this.list.length) {
+          this.set('list.'+idx+'.playing', true)
           this.play()
+        }
+      },
+      currentlyPlaying: function() {
+        return _.find(this.list, function(e) { return e.playing })
+      },
+      isPlaying: function() {
+        var r = _.find(this.list, function(e) { return e.playing })
+        return r != null && typeof r != 'undefined'
       },
       addVideo: function(e) {
-        console.log("DQWDQWD")
-        console.log(e.detail)
-        console.log(this.list)
 
         var that = this
         pegasus("/song/"+e.detail).then(function(data) {
-          that.push('list', { id: data.id, title: data.title, artist: data.artist })
+          that.push('list', { id: data.id, title: data.title, artist: data.artist, playing : false})
 
-          if(that.current == -1)
-            that.current = 0
-
-          if(that.current == that.list.length - 1)
+          if(!that.isPlaying()) {
+            that.set('list.'+(that.list.length-1)+'.playing', true)
             that.play()
+          }
 
-          console.log("Playlist =", that.list)
 
         })
 
       },
       play: function() {
-        console.log("PLAY A VID!")
         var that = this
-        this.getYTid(this.list[this.current].id).then(function(data) {
-          that.fire('iron-signal', {name: 'playyoutubevideo', data: data});
-        })
+        var cur = this.currentlyPlaying()
+
+        if(cur.id) {
+          this.getYTid(cur.id).then(function(data) {
+            that.fire('iron-signal', {name: 'playyoutubevideo', data: data});
+          })
+        }
       },
       getYTid: function(id) {
         return pegasus("/youtube/"+id)

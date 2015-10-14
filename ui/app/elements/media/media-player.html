@@ -21,7 +21,7 @@
     position: fixed;
     right: 40px;
   }
-  #playToggler {
+  .player-control {
     float:left;
   }
 </style>
@@ -29,15 +29,18 @@
   <iron-signals on-iron-signal-playyoutubevideo="play"></iron-signals>
 
   <paper-material class="footer" elevation="5">
-    <paper-fab id="playToggler" icon="{{playIcon}}"></paper-fab>
-    <paper-fab class="white" id="next" icon="av:skip-next"></paper-fab>
+    <paper-fab class="player-control" id="playToggler" icon="{{playIcon}}"></paper-fab>
+    <paper-fab class="player-control" id="next" icon="av:skip-next"></paper-fab>
     <google-youtube id="yt-pl"
                   video-id="{{vid}}"
                   height="70px"
                   width="100px"
+                  style="float: right"
                   state="{{state}}"
                   chromeless="true"
-                  autoplay="1">
+                  autoplay="1"
+                  on-google-youtube-state-change="handleStateChange"
+                  >
     </google-youtube>
   </paper-material>
 
@@ -61,6 +64,13 @@
         playIcon: {
           type: String,
           computed: 'computePlayIcon(state)'
+        }
+      },
+      handleStateChange: function(e) {
+        var newState = e.detail.data
+        console.log(newState)
+        if(newState == 0) { //Song just finished
+          this.playNext()
         }
       },
       attached: function() {
