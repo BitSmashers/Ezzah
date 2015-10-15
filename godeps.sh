@@ -13,5 +13,7 @@ go get -v github.com/jmoiron/sqlx
 echo "cypher driver (neoism) from github.com/jmcvetta/neoism"
 go get -v github.com/jmcvetta/neoism
 
+go get -v github.com/gorilla/mux
+
 echo "Go dependencies updated"
 

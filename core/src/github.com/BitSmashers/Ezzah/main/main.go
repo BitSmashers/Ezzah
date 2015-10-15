@@ -69,5 +69,5 @@ func initDatabase() {
 }
 
 func initBaseDbMock() {
-	log.Println("Inserting mock data...")
+	//log.Println("Inserting mock data...")
 }

@@ -19,6 +19,5 @@ if [ "$NEODB_PATH" = "" ];
 	echo "Starting Neo4J instance... $NEODB_PATH"
 fi
 
-go install github.com/BitSmashers/Ezzah/main
-./bin/main
+go install github.com/BitSmashers/Ezzah/main && ./bin/main
 

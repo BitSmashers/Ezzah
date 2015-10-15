@@ -19,7 +19,8 @@
     "paper-input": "PolymerElements/paper-input#~1.0.12",
     "pegasus": "~0.3.2",
     "platinum-elements": "PolymerElements/platinum-elements#1.0.1",
-    "world-flags-sprite": "*"
+    "world-flags-sprite": "*",
+    "paper-progress": "PolymerElements/paper-progress#~1.0.7"
   },
   "devDependencies": {
     "web-component-tester": "*",

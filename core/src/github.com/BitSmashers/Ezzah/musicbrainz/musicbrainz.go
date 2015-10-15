@@ -1,12 +1,11 @@
 package musicbrainz
 
 import "time"
-import "net/http"
-import "io/ioutil"
 import . "github.com/BitSmashers/Ezzah/music"
 import "encoding/json"
 import "log"
 import "net/url"
+import . "github.com/BitSmashers/Ezzah/utils"
 
 var mb_url string = "http://musicbrainz-mirror.eu:5000/ws/2/" //artist/?query=artist:swift&fmt=json"
 var mb_url_format string = "&fmt=json"
@@ -22,22 +21,11 @@ func artist_releases_url(q string)(string) {
 func GetArtistAlbums(query string)([]Album) {
   query = url.QueryEscape(query)
   log.Println("Ask for : "+artist_releases_url(query))
-  res, err := http.Get(artist_releases_url(query))
-  if err != nil {
-    panic(err)
-  }
 
-  defer res.Body.Close()
-
-  body, err := ioutil.ReadAll(res.Body)
-  if err != nil {
-    panic(err)
-  }
-
-  log.Println("Body is  : "+string(body))
+  jsonbytes := GetJson(artist_releases_url(query))
 
   var data MBReleases
-  err = json.Unmarshal(body, &data)
+  err := json.Unmarshal(jsonbytes, &data)
 
   if err != nil {
     panic(err)
@@ -47,22 +35,9 @@ func GetArtistAlbums(query string)([]Album) {
 }
 
 func GetSongDetails(id string)(Song) {
-  res, err := http.Get(mb_url+"recording/"+id+"?inc=artist-credits+isrcs+releases"+mb_url_format)
-  if err != nil {
-    panic(err)
-  }
-
-  defer res.Body.Close()
-
-  body, err := ioutil.ReadAll(res.Body)
-  if err != nil {
-    panic(err)
-  }
-
-  log.Println("Body is  : "+string(body))
-
+  jsonbytes := GetJson(mb_url+"recording/"+id+"?inc=artist-credits+isrcs+releases"+mb_url_format)
   var data MBRecording
-  err = json.Unmarshal(body, &data)
+  err := json.Unmarshal(jsonbytes, &data)
 
   if err != nil {
     panic(err)
@@ -74,29 +49,15 @@ func GetSongDetails(id string)(Song) {
 func ArtistSearch(query string)([]Artist) {
   query = url.QueryEscape(query)
   log.Println("Ask for : "+artists_query_url(query))
-  res, err := http.Get(artists_query_url(query))
-  if err != nil {
-    panic(err)
-  }
 
-  defer res.Body.Close()
-
-  body, err := ioutil.ReadAll(res.Body)
-  if err != nil {
-    panic(err)
-  }
-
-  log.Println("Body is  : "+string(body))
+  jsonbytes := GetJson(artists_query_url(query))
 
   var data MBArtistResults
-  err = json.Unmarshal(body, &data)
+  err := json.Unmarshal(jsonbytes, &data)
 
   if err != nil {
     panic(err)
   }
-
-  log.Println(err)
-  log.Println(data.Created)
 
   return toEzzahModels(data)
 }
@@ -118,7 +79,6 @@ func releasesToEzzahModels(res MBReleases)([]Album) {
       Title: el.Title,
       Tracks: tracks }
 
-    log.Println(arr[i])
 
   }
 
@@ -128,8 +88,6 @@ func releasesToEzzahModels(res MBReleases)([]Album) {
 func toEzzahModels(res MBArtistResults)([]Artist) {
   var arr = make([]Artist, len(res.Artists))
 
-  log.Println(res.Artists)
-
   for i,el := range res.Artists {
     arr[i] =  Artist{
       Id: el.Id,
@@ -137,9 +95,6 @@ func toEzzahModels(res MBArtistResults)([]Artist) {
       Details: el.Disambiguation,
       Albums: []Album{},
       Country: el.Country }
-
-    log.Println(arr[i])
-
   }
 
   return arr
