@@ -31,7 +31,7 @@
   <paper-material class="footer" elevation="5">
     <paper-fab class="player-control" id="playToggler" icon="{{playIcon}}"></paper-fab>
     <paper-fab class="player-control" id="next" icon="av:skip-next"></paper-fab>
-    <paper-progress value="10"></paper-progress>
+    <paper-progress value="{{playercurrenttime}}" max="{{playerduration}}"></paper-progress>
     <google-youtube id="yt-pl"
                   video-id="{{vid}}"
                   height="70px"
@@ -41,6 +41,8 @@
                   chromeless="true"
                   autoplay="1"
                   on-google-youtube-state-change="handleStateChange"
+                  currenttime="{{playercurrenttime}}"
+                  duration="{{playerduration}}"
                   >
     </google-youtube>
   </paper-material>
@@ -69,7 +71,6 @@
       },
       handleStateChange: function(e) {
         var newState = e.detail.data
-        console.log(newState)
         if(newState == 0) { //Song just finished
           this.playNext()
         }

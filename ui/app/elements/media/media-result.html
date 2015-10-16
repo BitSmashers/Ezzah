@@ -7,16 +7,21 @@
       float:left;
       width: 150px;
     }
-    .song {
+    .song-result {
       cursor: pointer;
+    }
+    .song-control:hover {
+      color: blue;
     }
   </style>
   <template>
     <div><h3>{{elem.title}}</h3></div>
     <template is="dom-repeat" items="{{elem.tracks}}">
-      <paper-item class="result-line">
+      <paper-item class="result-line song-result">
+      <iron-icon class="song-control" icon="av:play-arrow" data-vid$="{{item.id}}" on-click="addVideo"></iron-icon>
+      <iron-icon class="song-control" icon="av:playlist-add" data-vid$="{{item.id}}" on-click="addVideo"></iron-icon>
         <paper-item-body>
-        <span class="song" on-click="addVideo" data-vid$="{{item.id}}">{{item.title}}</span>
+        <span class="song" >{{item.title}}</span>
         </paper-item-body>
       </paper-item>
     </template>

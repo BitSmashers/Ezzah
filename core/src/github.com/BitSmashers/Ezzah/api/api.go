@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"github.com/BitSmashers/Ezzah/musicbrainz"
 	"github.com/gorilla/mux"
+  . "github.com/BitSmashers/Ezzah/utils"
+
 )
 
 func StartServer() {
