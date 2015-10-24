@@ -59,7 +59,6 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 func artistHandler(w http.ResponseWriter, r *http.Request) {
 	query := mux.Vars(r)["id"]
-
 	jsonHandler(w, musicbrainz.GetArtistAlbums(query))
 }
 
@@ -80,9 +79,9 @@ func youtubeHandler(w http.ResponseWriter, r *http.Request) {
 	url := "https://www.googleapis.com/youtube/v3/search?q=" + query + "&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew"
 
 	var ytres YoutubeResults
-	jsontext := utils.GetJson(url)
+	jsontext,err := utils.GetJson(url)
 
-	err := json.Unmarshal(jsontext, &ytres)
+	err = json.Unmarshal(jsontext, &ytres)
 
 	if err != nil {
 		panic(err)

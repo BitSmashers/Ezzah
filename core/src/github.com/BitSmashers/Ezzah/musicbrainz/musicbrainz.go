@@ -22,7 +22,7 @@ func GetArtistAlbums(query string) ([]Album) {
 	query = url.QueryEscape(query)
 	log.Println("Ask for : " + artist_releases_url(query))
 
-	jsonbytes := GetJson(artist_releases_url(query))
+	jsonbytes, _ := GetJson(artist_releases_url(query))
 
 	var data MBReleases
 	err := json.Unmarshal(jsonbytes, &data)
@@ -35,7 +35,7 @@ func GetArtistAlbums(query string) ([]Album) {
 }
 
 func GetSongDetails(id string) (Song) {
-	jsonbytes := GetJson(mb_url + "recording/" + id + "?inc=artist-credits+isrcs+releases" + mb_url_format)
+	jsonbytes, _ := GetJson(mb_url + "recording/" + id + "?inc=artist-credits+isrcs+releases" + mb_url_format)
 	var data MBRecording
 	err := json.Unmarshal(jsonbytes, &data)
 
@@ -47,14 +47,20 @@ func GetSongDetails(id string) (Song) {
 }
 
 func ArtistSearch(query string) ([]Artist) {
+	log.Println("Received Query : ", query)
 	query = url.QueryEscape(query)
 	log.Println("Ask for : " + artists_query_url(query))
 
-	jsonbytes := GetJson(artists_query_url(query))
+	jsonbytes, err := GetJsonWithRetry(artists_query_url(query), 10)
 
+	if err != nil {
+		panic(err)
+	}
 	var data MBArtistResults
-	err := json.Unmarshal(jsonbytes, &data)
 
+	log.Println("Unmarshaling...")
+	err = json.Unmarshal(jsonbytes, &data)
+	log.Println(data.Count, " results.")
 	if err != nil {
 		panic(err)
 	}
