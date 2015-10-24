@@ -1,14 +1,36 @@
-package neozah
-
+package persistence
 import (
-	"log"
 	"github.com/jmcvetta/neoism"
+	. "github.com/BitSmashers/Ezzah/model"
 )
 
-func InitDatabase() {
-	log.Println("Trying to connect database...")
-	//http://your_user:your_password@neo4j.yourdomain.com/db/data/
-	db, err := neoism.Connect("http://neo4j:unsecure@localhost:7474/db/data")
+/**
+	Implements Connection
+ */
+type ConnectionNeoImpl struct {
+	dbpath string
+	db     *neoism.Database
+}
+
+func NewConnectionNeo(dbpath string, db *neoism.Database) ConnectionNeoImpl {
+	return ConnectionNeoImpl{dbpath, db}
+}
+
+func (c ConnectionNeoImpl) SaveArtist(a *Artist) {
+
+}
+
+func (c ConnectionNeoImpl) ToString() string {
+	return ""
+}
+
+func (c ConnectionNeoImpl) FindArtist(name string) *Artist {
+	return nil
+}
+
+
+/*
+
 	n, err := db.CreateNode(neoism.Props{"name": "Captain Kirk"})
 	defer n.Delete()  // Deferred clean up
 	n.AddLabel("Person") // Add a label
@@ -29,8 +51,4 @@ func InitDatabase() {
 	}
 	log.Println(db, n)
 	log.Println("Result => ", cq.Result) // Dont know yet how to tame results :)
-}
-
-func InitBaseDbMock() {
-	//log.Println("Inserting mock data...")
-}
+ */

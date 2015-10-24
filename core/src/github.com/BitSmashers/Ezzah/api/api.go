@@ -9,13 +9,12 @@ import (
 	"net/url"
 	"github.com/BitSmashers/Ezzah/musicbrainz"
 	"github.com/gorilla/mux"
-  . "github.com/BitSmashers/Ezzah/utils"
+	"github.com/BitSmashers/Ezzah/utils"
 
 )
 
 func StartServer() {
 	port := os.Getenv("PORT")
-
 	if (port == "") {
 		port = "9000"
 	}
@@ -81,7 +80,7 @@ func youtubeHandler(w http.ResponseWriter, r *http.Request) {
 	url := "https://www.googleapis.com/youtube/v3/search?q=" + query + "&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew"
 
 	var ytres YoutubeResults
-	jsontext := GetJson(url)
+	jsontext := utils.GetJson(url)
 
 	err := json.Unmarshal(jsontext, &ytres)
 

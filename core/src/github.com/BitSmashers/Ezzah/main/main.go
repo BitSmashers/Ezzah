@@ -4,17 +4,17 @@ package main
 import (
 	"os"
 	"log"
-	"github.com/BitSmashers/Ezzah/api"
-//"github.com/BitSmashers/Ezzah/neozah"
+//"github.com/BitSmashers/Ezzah/api"
+//"github.com/BitSmashers/Ezzah/persistence"
 )
 
 var neo4jURL string
 
 func main() {
 	initEnv()
-	//neozah.InitDatabase()
-	//neozah.InitBaseDbMock()
-	api.StartServer()
+
+	//persistence.InitDatabase()
+	//persistence.InitBaseDbMock()
 	log.Println("Db URL : ", neo4jURL)
 }
 
