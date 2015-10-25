@@ -79,7 +79,7 @@ func youtubeHandler(w http.ResponseWriter, r *http.Request) {
 	url := "https://www.googleapis.com/youtube/v3/search?q=" + query + "&part=snippet&key=AIzaSyCjHL3fQcfHvny-XEnLyGJ8rrxeCtnqOew"
 
 	var ytres YoutubeResults
-	jsontext,err := utils.GetJson(url)
+	jsontext, err := utils.GetJson(url)
 
 	err = json.Unmarshal(jsontext, &ytres)
 

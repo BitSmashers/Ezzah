@@ -4,6 +4,7 @@ import "net/http"
 import (
 	"io/ioutil"
 	"log"
+	"time"
 )
 
 func GetJson(url string) ([]byte, error) {
@@ -23,14 +24,16 @@ func GetJson(url string) ([]byte, error) {
 	return body, nil
 }
 func GetJsonWithRetry(url string, retry int) ([]byte, error) {
-	val, err :=	GetJson(url)
+	val, err := GetJson(url)
 	if err != nil {
-		if(retry<0){
-			return nil,err
+		if (retry < 0) {
+			return nil, err
 		}
-	return GetJsonWithRetry(url,retry-1)
+		//avoid cpu burning or
+		time.Sleep(200 * time.Millisecond)
+		return GetJsonWithRetry(url, retry - 1)
 	}
-	log.Println("Done, retry left ",retry)
-	return val,nil
+	log.Println("Done, retry left ", retry)
+	return val, nil
 
 }
