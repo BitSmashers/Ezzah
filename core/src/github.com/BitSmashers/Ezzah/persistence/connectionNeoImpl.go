@@ -16,16 +16,19 @@ func NewConnectionNeo(dbpath string, db *neoism.Database) ConnectionNeoImpl {
 	return ConnectionNeoImpl{dbpath, db}
 }
 
-func (c ConnectionNeoImpl) SaveArtist(a Artist) {
-
+func (c ConnectionNeoImpl) SaveArtist(a Artist) Connection {
+	return c
+}
+func (c ConnectionNeoImpl) SaveArtists(a []Artist) Connection {
+	return c
 }
 
 func (c ConnectionNeoImpl) ToString() string {
 	return ""
 }
 
-func (c ConnectionNeoImpl) FindArtist(name string) Artist {
-	return Artist{"","","",nil,""}
+func (c ConnectionNeoImpl) FindArtist(name string) *Artist {
+	return &Artist{"", "", "", nil, ""}
 }
 
 
