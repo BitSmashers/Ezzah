@@ -12,11 +12,7 @@ type ConnectionTestImpl struct {
 }
 
 func NewConnectionTest() ConnectionTestImpl {
-	//	artists := new([]Artist)
 	return ConnectionTestImpl{make([]Artist, 0, 10)}
-}
-
-type T interface {
 }
 
 func addArtist(slice []Artist, element Artist) []Artist {
@@ -45,7 +41,7 @@ func (c ConnectionTestImpl) SaveArtists(artists []Artist) Connection {
 }
 
 func (c ConnectionTestImpl) ToString() string {
-	return ""
+	return "InMemory : "+c
 }
 
 func (c ConnectionTestImpl) FindArtist(name string) *Artist {

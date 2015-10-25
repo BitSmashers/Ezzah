@@ -12,8 +12,6 @@ func TestSaveNewArtist(t *testing.T) {
 	artists[1] = Artist{"456", "Paul", "Details2", nil, "France"}
 	artists[2] = Artist{"789", "Jack", "Details3", nil, "France"}
 	cnx = cnx.SaveArtists(artists)
-//	cnx = cnx.SaveArtist(artists[1])
-//	cnx = cnx.SaveArtist(artists[2])
 
 	for _, a := range artists {
 		retrievedArtist := cnx.FindArtist(a.Name)
