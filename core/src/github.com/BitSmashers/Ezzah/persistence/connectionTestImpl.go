@@ -41,7 +41,7 @@ func (c ConnectionTestImpl) SaveArtists(artists []Artist) Connection {
 }
 
 func (c ConnectionTestImpl) ToString() string {
-	return "InMemory : "+c
+	return "InMemory : "
 }
 
 func (c ConnectionTestImpl) FindArtist(name string) *Artist {

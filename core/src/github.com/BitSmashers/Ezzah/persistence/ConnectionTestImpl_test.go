@@ -2,6 +2,8 @@ package persistence
 import (
 	"testing"
 	. "github.com/BitSmashers/Ezzah/model"
+      "github.com/stretchr/testify/assert"
+
 )
 
 func TestSaveNewArtist(t *testing.T) {
@@ -15,7 +17,8 @@ func TestSaveNewArtist(t *testing.T) {
 
 	for _, a := range artists {
 		retrievedArtist := cnx.FindArtist(a.Name)
-		if retrievedArtist == nil || retrievedArtist.Name != a.Name {
+			assert.Equal(t,retrievedArtist,&a,"Failed")
+			if retrievedArtist == nil || retrievedArtist.Name != a.Name {
 			t.Errorf("%s %s %s %s", "Wrong artist retrieved ", retrievedArtist, "instead of ", a)
 		}
 	}
