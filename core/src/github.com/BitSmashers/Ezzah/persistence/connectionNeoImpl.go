@@ -16,19 +16,46 @@ func NewConnectionNeo(dbpath string, db *neoism.Database) ConnectionNeoImpl {
 	return ConnectionNeoImpl{dbpath, db}
 }
 
-func (c ConnectionNeoImpl) SaveArtist(a Artist) Connection {
-	return c
-}
-func (c ConnectionNeoImpl) SaveArtists(a []Artist) Connection {
-	return c
+func (c *ConnectionNeoImpl) SaveArtists(artists []Artist) {
+	for _, a := range artists {
+		c.SaveArtist(a)
+	}
 }
 
-func (c ConnectionNeoImpl) ToString() string {
-	return ""
+func (c ConnectionNeoImpl) SaveArtist(a Artist) {
+	createNode(neoism.Props{"id":a.Id, "name":a.Name, "country": a.Country, "details":a.Details}, c)
+	c.SaveAlbums(a.Albums)
+	//Create links
+}
+
+func createNode(p neoism.Props, c ConnectionNeoImpl) (*neoism.Node) {
+	node, err := c.db.CreateNode(p)
+	if err != nil {
+		panic(err)
+	}
+	return node
 }
 
 func (c ConnectionNeoImpl) FindArtist(name string) *Artist {
 	return &Artist{"", "", "", nil, ""}
+}
+
+func (c ConnectionNeoImpl) SaveAlbum(al Album) {
+	createNode(neoism.Props{"id":al.Id, "title":al.Title}, c)
+}
+
+func (c *ConnectionNeoImpl) SaveAlbums(albums []Album) {
+	for _, a := range albums {
+		c.SaveAlbum(a)
+	}
+}
+
+func (c *ConnectionNeoImpl) FindAlbum(title string) *Album {
+	return nil
+}
+
+func (c *ConnectionNeoImpl) ToString() string {
+	return ""
 }
 
 

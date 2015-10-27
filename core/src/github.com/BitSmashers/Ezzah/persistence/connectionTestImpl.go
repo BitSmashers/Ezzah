@@ -27,28 +27,36 @@ func addArtist(slice []Artist, element Artist) []Artist {
 
 }
 
-func (c ConnectionTestImpl) SaveArtist(a Artist) Connection {
+func (c *ConnectionTestImpl) SaveArtist(a Artist) {
 	c.artists = addArtist(c.artists, a)
-	return c
 }
 
-func (c ConnectionTestImpl) SaveArtists(artists []Artist) Connection {
+func (c *ConnectionTestImpl) SaveArtists(artists []Artist)  {
 	for _, a := range artists {
 		//Downcast, should exist a better way to keep state call after call,... pointers
-		c = c.SaveArtist(a).(ConnectionTestImpl)
+		c.SaveArtist(a)
 	}
-	return c
 }
 
-func (c ConnectionTestImpl) ToString() string {
+func (c *ConnectionTestImpl) ToString() string {
 	return "InMemory : "
 }
 
-func (c ConnectionTestImpl) FindArtist(name string) *Artist {
+func (c *ConnectionTestImpl) FindArtist(name string) *Artist {
 	for _, a := range c.artists {
 		if a.Name == name {
 			return &a
 		}
 	}
+	return nil
+}
+
+func (c *ConnectionTestImpl) SaveAlbum(a Album)  {
+}
+
+func (c *ConnectionTestImpl) SaveAlbums(albums []Album)  {
+}
+
+func (c *ConnectionTestImpl) FindAlbum(title string) *Album {
 	return nil
 }

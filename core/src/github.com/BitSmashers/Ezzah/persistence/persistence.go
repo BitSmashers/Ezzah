@@ -8,16 +8,18 @@ import (
 func CreateNewConnection() Connection {
 	log.Println("Trying to connect database...")
 	//http://your_user:your_password@neo4j.yourdomain.com/db/data/
-	dbpath := "http://neo4j:unsecure@localhost:7474/db/data"
+	dbpath := "http://neo4j:rirh@localhost:7474/db/data"
 	db, err := neoism.Connect(dbpath)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	return Connection(NewConnectionNeo(dbpath, db))
+	c := NewConnectionNeo(dbpath, db)
+	return Connection(&c)
 
 }
 
 func CreateNewConnectionForTest() Connection {
-	return Connection(NewConnectionTest())
+	c := NewConnectionTest()
+	return Connection(&c)
 }
