@@ -11,7 +11,10 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/BitSmashers/Ezzah/utils"
 
+	"github.com/BitSmashers/Ezzah/persistence"
 )
+
+var connection persistence.Connection = persistence.CreateNewConnection()
 
 func StartServer() {
 	port := os.Getenv("PORT")
@@ -53,8 +56,11 @@ func bowerHandler(w http.ResponseWriter, r *http.Request) {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := mux.Vars(r)["query"]
-
-	jsonHandler(w, musicbrainz.ArtistSearch(query))
+	artists := musicbrainz.ArtistSearch(query)
+	if len(artists) > 0 {
+		connection.SaveArtists(artists)
+	}
+	jsonHandler(w, artists)
 }
 
 func artistHandler(w http.ResponseWriter, r *http.Request) {
