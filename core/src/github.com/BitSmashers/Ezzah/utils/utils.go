@@ -35,5 +35,11 @@ func GetJsonWithRetry(url string, retry int) ([]byte, error) {
 	}
 	log.Println("Done, retry left ", retry)
 	return val, nil
+}
 
+func HandleError(err error){
+	if err != nil {
+		log.Fatal(err)
+		panic(err)
+	}
 }

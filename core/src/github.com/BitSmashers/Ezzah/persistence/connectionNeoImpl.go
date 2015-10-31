@@ -36,8 +36,10 @@ func createNode(p neoism.Props, c ConnectionNeoImpl) (*neoism.Node) {
 	return node
 }
 
-func (c ConnectionNeoImpl) FindArtist(name string) *Artist {
-	return &Artist{"", "", "", nil, ""}
+func (c ConnectionNeoImpl) FindArtists(name string) []Artist {
+
+	return make([]Artist, 0, 0)
+	//[]Artist{"", "", "", nil, ""}
 }
 
 func (c ConnectionNeoImpl) SaveAlbum(al Album) {
@@ -56,6 +58,9 @@ func (c *ConnectionNeoImpl) FindAlbum(title string) *Album {
 
 func (c *ConnectionNeoImpl) ToString() string {
 	return ""
+}
+
+func (c *ConnectionNeoImpl) DeleteArtist(id string) {
 }
 
 

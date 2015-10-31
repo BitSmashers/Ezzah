@@ -11,6 +11,8 @@ type ConnectionTestImpl struct {
 	artists []Artist
 }
 
+var limit = 50
+
 func NewConnectionTest() ConnectionTestImpl {
 	return ConnectionTestImpl{make([]Artist, 0, 10)}
 }
@@ -31,7 +33,7 @@ func (c *ConnectionTestImpl) SaveArtist(a Artist) {
 	c.artists = addArtist(c.artists, a)
 }
 
-func (c *ConnectionTestImpl) SaveArtists(artists []Artist)  {
+func (c *ConnectionTestImpl) SaveArtists(artists []Artist) {
 	for _, a := range artists {
 		//Downcast, should exist a better way to keep state call after call,... pointers
 		c.SaveArtist(a)
@@ -42,21 +44,28 @@ func (c *ConnectionTestImpl) ToString() string {
 	return "InMemory : "
 }
 
-func (c *ConnectionTestImpl) FindArtist(name string) *Artist {
+func (c *ConnectionTestImpl) FindArtists(name string) []Artist {
+	result := make([]Artist, limit, limit)
+	idx := 0
 	for _, a := range c.artists {
 		if a.Name == name {
-			return &a
+			result[idx] = a
+			idx++
 		}
 	}
-	return nil
+	return result[0:idx]
 }
 
-func (c *ConnectionTestImpl) SaveAlbum(a Album)  {
+func (c *ConnectionTestImpl) SaveAlbum(a Album) {
 }
 
-func (c *ConnectionTestImpl) SaveAlbums(albums []Album)  {
+func (c *ConnectionTestImpl) SaveAlbums(albums []Album) {
 }
 
 func (c *ConnectionTestImpl) FindAlbum(title string) *Album {
 	return nil
 }
+
+func (c *ConnectionTestImpl) DeleteArtist(id string) {
+}
+

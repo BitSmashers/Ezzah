@@ -16,10 +16,9 @@ func TestSaveNewArtist(t *testing.T) {
 	cnx.SaveArtists(artists)
 
 	for _, a := range artists {
-		retrievedArtist := cnx.FindArtist(a.Name)
-		assert.Equal(t, retrievedArtist, &a, "Failed")
-		if retrievedArtist == nil || retrievedArtist.Name != a.Name {
-			t.Errorf("%s %s %s %s", "Wrong artist retrieved ", retrievedArtist, "instead of ", a)
+		retrievedArtist := cnx.FindArtists(a.Name)
+		for _, ra := range retrievedArtist {
+			assert.Equal(t, ra.Name, &a.Name, "Wrong artist retrieved ", retrievedArtist, "instead of ", a)
 		}
 	}
 }
