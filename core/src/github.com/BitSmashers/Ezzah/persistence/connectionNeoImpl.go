@@ -2,6 +2,7 @@ package persistence
 import (
 	"github.com/jmcvetta/neoism"
 	. "github.com/BitSmashers/Ezzah/model"
+	"log"
 )
 
 /**
@@ -37,7 +38,19 @@ func createNode(p neoism.Props, c ConnectionNeoImpl) (*neoism.Node) {
 }
 
 func (c ConnectionNeoImpl) FindArtists(name string) []Artist {
+	log.Println("Looking for artist name:" + name)
+	res := []struct {
+		// `json:` tags matches column names in query
+		name string `json:"a.name"`
+	}{}
 
+	cq := neoism.CypherQuery{
+		Statement: "MATCH (a { name: " + name + "}) RETURN a LIMIT 100",
+		Parameters: neoism.Props{"name": name},
+		Result:     &res,
+	}
+	c.db.Cypher(&cq)
+	log.Println("Result size : ", len(res), " Result : " , res)
 	return make([]Artist, 0, 0)
 	//[]Artist{"", "", "", nil, ""}
 }

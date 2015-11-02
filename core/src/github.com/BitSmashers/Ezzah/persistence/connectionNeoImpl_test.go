@@ -27,6 +27,7 @@ func TestSaveNewArtistN(t *testing.T) {
 	//try to retrieve them
 	artistsRet := cnx.FindArtists("Pierre")
 	log.Println(artistsRet)
+	assert.Equal(t,len(artistsRet),1, "")
 }
 
 func TestSaveNewArtistN2(t *testing.T) {
