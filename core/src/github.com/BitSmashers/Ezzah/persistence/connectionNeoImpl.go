@@ -2,7 +2,7 @@ package persistence
 import (
 	"github.com/jmcvetta/neoism"
 	. "github.com/BitSmashers/Ezzah/model"
-	"log"
+	"github.com/BitSmashers/Ezzah/utils"
 )
 
 /**
@@ -12,6 +12,8 @@ type ConnectionNeoImpl struct {
 	dbpath string
 	db     *neoism.Database
 }
+
+var ARTIST_ALBUM_ARROW = "alb"
 
 func NewConnectionNeo(dbpath string, db *neoism.Database) ConnectionNeoImpl {
 	return ConnectionNeoImpl{dbpath, db}
@@ -24,49 +26,109 @@ func (c *ConnectionNeoImpl) SaveArtists(artists []Artist) {
 }
 
 func (c ConnectionNeoImpl) SaveArtist(a Artist) {
-	createNode(neoism.Props{"id":a.Id, "name":a.Name, "country": a.Country, "details":a.Details}, c)
-	c.SaveAlbums(a.Albums)
+
+	createNode(c, neoism.Props{"Id":a.Id, "Name":a.Name, "Country": a.Country, "Details":a.Details}, "Artist", "Person")
+	c.SaveAlbums(a, a.Albums)
 	//Create links
 }
 
-func createNode(p neoism.Props, c ConnectionNeoImpl) (*neoism.Node) {
+// Create a node into db
+// Labels are used as filter into 'FindX()' functions
+func createNode(c ConnectionNeoImpl, p neoism.Props, labels ...string) (*neoism.Node) {
 	node, err := c.db.CreateNode(p)
+	node.AddLabel(labels...)
 	if err != nil {
 		panic(err)
 	}
 	return node
 }
+type resStruct2 struct {
+	Artist Artist `json:"artist"`
+}
 
 func (c ConnectionNeoImpl) FindArtists(name string) []Artist {
-	log.Println("Looking for artist name:" + name)
-	res := []struct {
-		// `json:` tags matches column names in query
-		name string `json:"a.name"`
-	}{}
+	utils.LOG.Info("Looking for artist name:" + name)
+	artists := make([]Artist, 0, 100)
+	// query results
+	res := []Artist{}
+
+//	[]struct {
+//		Actor neoism.Node
+//	}{}
 
 	cq := neoism.CypherQuery{
-		Statement: "MATCH (a { name: " + name + "}) RETURN a LIMIT 100",
+		Statement:
+		`
+		MATCH (artist:Artist)
+		WHERE artist.Name={name}
+		RETURN artist
+		`,
 		Parameters: neoism.Props{"name": name},
 		Result:     &res,
 	}
-	c.db.Cypher(&cq)
-	log.Println("Result size : ", len(res), " Result : " , res)
-	return make([]Artist, 0, 0)
+	err := c.db.Cypher(&cq)
+
+	utils.HandleError(err)
+	utils.LOG.Info("Res len", len(res))
+	utils.LOG.Info("Res", res)
+	utils.LOG.Info("Result size : ", len(artists), " Result : ", artists)
+	return artists
+}
+func (c *ConnectionNeoImpl) findArtistById(id string) Artist {
+	utils.LOG.Info("Looking for artist id:" + id)
+
+	artistsDb := make([]Artist, 0, 100)
+
+	cq := neoism.CypherQuery{
+		Statement: "MATCH artist WHERE id={id} RETURN artist LIMIT 100",
+		Parameters: neoism.Props{"id": id},
+		Result:     &artistsDb,
+	}
+	err := c.db.Cypher(&cq)
+	utils.HandleError(err)
+	utils.LOG.Info("Result size : ", len(artistsDb), " Result : ", artistsDb)
+	if len(artistsDb) != 0 {
+		return artistsDb[0]
+	}
+	return Artist{}
 	//[]Artist{"", "", "", nil, ""}
 }
 
-func (c ConnectionNeoImpl) SaveAlbum(al Album) {
-	createNode(neoism.Props{"id":al.Id, "title":al.Title}, c)
-}
-
-func (c *ConnectionNeoImpl) SaveAlbums(albums []Album) {
+// Album
+func (c *ConnectionNeoImpl) SaveAlbums(artist Artist, albums []Album) {
 	for _, a := range albums {
-		c.SaveAlbum(a)
+
+		c.SaveAlbum(artist, a)
 	}
 }
 
+func (c *ConnectionNeoImpl) SaveAlbum(artist Artist, al Album) {
+	//	node := createNode(neoism.Props{"id":al.Id, "title":al.Title}, c)
+	//	findArtistById("")
+	//	node.Relate(ARTIST_ALBUM_ARROW, int(id), neoism.Props{})
+}
+
+
 func (c *ConnectionNeoImpl) FindAlbum(title string) *Album {
 	return nil
+}
+
+func (c *ConnectionNeoImpl) FindAlbums(artist Artist) []Album {
+
+	album := make([]Album, 0, 50)
+	cq := neoism.CypherQuery{
+		// Use backticks for long statements - Cypher is whitespace indifferent
+		Statement: `
+        MATCH (artist)-[:alb]->(album)
+        WHERE artist.name={name}
+        RETURN album`,
+		Parameters: neoism.Props{"name": artist.Name, "rel": ARTIST_ALBUM_ARROW},
+		Result:     &album,
+	}
+	err := c.db.Cypher(&cq)
+	utils.HandleError(err)
+	utils.LOG.Info("Album : ", album)
+	return album
 }
 
 func (c *ConnectionNeoImpl) ToString() string {
@@ -97,6 +159,6 @@ func (c *ConnectionNeoImpl) DeleteArtist(id string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(db, n)
-	log.Println("Result => ", cq.Result) // Dont know yet how to tame results :)
+	utils.LOG.Info(db, n)
+	utils.LOG.Info("Result => ", cq.Result) // Dont know yet how to tame results :)
  */

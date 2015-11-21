@@ -14,6 +14,7 @@ echo "cypher driver (neoism) from github.com/jmcvetta/neoism"
 go get -v github.com/jmcvetta/neoism
 
 go get -v github.com/gorilla/mux
+go get -v github.com/op/go-logging
 
 echo "Go dependencies updated"
 

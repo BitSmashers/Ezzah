@@ -56,13 +56,17 @@ func (c *ConnectionTestImpl) FindArtists(name string) []Artist {
 	return result[0:idx]
 }
 
-func (c *ConnectionTestImpl) SaveAlbum(a Album) {
+func (c *ConnectionTestImpl) SaveAlbum(artist Artist, a Album) {
 }
 
-func (c *ConnectionTestImpl) SaveAlbums(albums []Album) {
+func (c *ConnectionTestImpl) SaveAlbums(artist Artist, albums []Album) {
 }
 
 func (c *ConnectionTestImpl) FindAlbum(title string) *Album {
+	return nil
+}
+
+func (c *ConnectionTestImpl) FindAlbums(artist Artist) []Album {
 	return nil
 }
 

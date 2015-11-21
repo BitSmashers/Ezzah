@@ -15,11 +15,11 @@ type Album struct {
 }
 
 type Artist struct {
-	Id      string `json:"id"`
-	Name    string `json:"name"`
-	Details string `json:"details"`
-	Albums  []Album `json:"albums"`
-	Country string `json:"country"`
+	Id      string `json:"Id"`
+	Name    string `json:"Name"`
+	Details string `json:"Details"`
+	Albums  []Album `json:"Albums"`
+	Country string `json:"Country"`
 }
 
 type Results []Artist

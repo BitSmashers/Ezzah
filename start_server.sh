@@ -6,7 +6,7 @@ if [ -e ./env.toSource.local ]
 	source ./env.toSource.local
 fi
 
-sh ./godeps.sh
+## sh ./godeps.sh
 
 cd core
 

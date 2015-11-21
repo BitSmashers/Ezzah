@@ -56,9 +56,14 @@ func bowerHandler(w http.ResponseWriter, r *http.Request) {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := mux.Vars(r)["query"]
+
 	artists := musicbrainz.ArtistSearch(query)
 	if len(artists) > 0 {
 		connection.SaveArtists(artists)
+	}
+	for i,_ := range artists {
+		albums := musicbrainz.GetArtistAlbums(artists[i].Id)
+		connection.SaveAlbums(artists[i],albums)
 	}
 	jsonHandler(w, artists)
 }
