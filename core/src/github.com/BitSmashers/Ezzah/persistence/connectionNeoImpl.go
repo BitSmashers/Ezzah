@@ -9,17 +9,22 @@ import (
 	Implements Connection
  */
 type ConnectionNeoImpl struct {
-	dbpath string
-	db     *neoism.Database
+	dbpath        string
+	db            *neoism.Database
+	specialLabels []string //Used to tag sone data, useful to remove quickly testing data
 }
 
 var ARTIST_ALBUM_ARROW = "alb"
 
-func NewConnectionNeo(dbpath string, db *neoism.Database) ConnectionNeoImpl {
-	return ConnectionNeoImpl{dbpath, db}
+func NewConnectionNeo(dbpath string, db *neoism.Database, specialLabels... string) ConnectionNeoImpl {
+	labels := make([]string, len(specialLabels), len(specialLabels))
+	for i, l := range specialLabels {
+		labels[i] = l
+	}
+	return ConnectionNeoImpl{dbpath, db, labels}
 }
 
-func (c *ConnectionNeoImpl) SaveArtists(artists []Artist) {
+func (c ConnectionNeoImpl) SaveArtists(artists []Artist) {
 	for _, a := range artists {
 		c.SaveArtist(a)
 	}
@@ -52,10 +57,6 @@ func (c ConnectionNeoImpl) FindArtists(name string) []Artist {
 	// query results
 	res := []Artist{}
 
-//	[]struct {
-//		Actor neoism.Node
-//	}{}
-
 	cq := neoism.CypherQuery{
 		Statement:
 		`
@@ -74,7 +75,7 @@ func (c ConnectionNeoImpl) FindArtists(name string) []Artist {
 	utils.LOG.Info("Result size : ", len(artists), " Result : ", artists)
 	return artists
 }
-func (c *ConnectionNeoImpl) findArtistById(id string) Artist {
+func (c ConnectionNeoImpl) findArtistById(id string) Artist {
 	utils.LOG.Info("Looking for artist id:" + id)
 
 	artistsDb := make([]Artist, 0, 100)
@@ -95,25 +96,25 @@ func (c *ConnectionNeoImpl) findArtistById(id string) Artist {
 }
 
 // Album
-func (c *ConnectionNeoImpl) SaveAlbums(artist Artist, albums []Album) {
+func (c ConnectionNeoImpl) SaveAlbums(artist Artist, albums []Album) {
 	for _, a := range albums {
 
 		c.SaveAlbum(artist, a)
 	}
 }
 
-func (c *ConnectionNeoImpl) SaveAlbum(artist Artist, al Album) {
+func (c ConnectionNeoImpl) SaveAlbum(artist Artist, al Album) {
 	//	node := createNode(neoism.Props{"id":al.Id, "title":al.Title}, c)
 	//	findArtistById("")
 	//	node.Relate(ARTIST_ALBUM_ARROW, int(id), neoism.Props{})
 }
 
 
-func (c *ConnectionNeoImpl) FindAlbum(title string) *Album {
+func (c ConnectionNeoImpl) FindAlbum(title string) *Album {
 	return nil
 }
 
-func (c *ConnectionNeoImpl) FindAlbums(artist Artist) []Album {
+func (c ConnectionNeoImpl) FindAlbums(artist Artist) []Album {
 
 	album := make([]Album, 0, 50)
 	cq := neoism.CypherQuery{
@@ -131,34 +132,53 @@ func (c *ConnectionNeoImpl) FindAlbums(artist Artist) []Album {
 	return album
 }
 
-func (c *ConnectionNeoImpl) ToString() string {
+func (c ConnectionNeoImpl) ToString() string {
 	return ""
 }
 
-func (c *ConnectionNeoImpl) DeleteArtist(id string) {
+func (c ConnectionNeoImpl) DeleteArtist(id string) {
+}
+
+func (c ConnectionNeoImpl) FindSongsByArtist(artistName string) []Song {
+	songs := []Song{}
+	cq := neoism.CypherQuery{
+		//		 Use backticks for long statements - Cypher is whitespace indifferent
+		Statement: `
+        MATCH (song:Song)
+        WHERE song.artist={name}
+        RETURN song.title as title, song.artist as artist, song.id as id`,
+		Parameters: neoism.Props{"name": artistName},
+		Result:     &songs,
+	}
+	err := c.db.Cypher(&cq)
+	utils.HandleError(err)
+	utils.LOG.Info("Found %d songs", len(songs))
+	return songs
+}
+
+func (c ConnectionNeoImpl) SaveSong(song Song) {
+	utils.LOG.Info("special labels %s", c.specialLabels)
+	createNode(c, neoism.Props{"id":song.Id, "artist":song.Artist, "title": song.Title},
+		append(c.specialLabels, "Song")...)
 }
 
 
-/*
+func (c ConnectionNeoImpl) ClearDbPerLabel(label string) {
+	var query string
+	query = `MATCH (n:` + label + `) DELETE n`
+	//	query = `MATCH (n:` + label + `) RETURN  count(*) as count`
+	//	res := struct {
+	//		Count string `json:"count"`
+	//	}{}
 
-	n, err := db.CreateNode(neoism.Props{"name": "Captain Kirk"})
-	defer n.Delete()  // Deferred clean up
-	n.AddLabel("Person") // Add a label
-
-	res := []struct {
-		// `json:` tags matches column names in query
-		A string `json:"a.name"`
-	}{}
 	cq := neoism.CypherQuery{
 		// Use backticks for long statements - Cypher is whitespace indifferent
-		Statement: `MATCH (a { name: "Captain Kirk"}) RETURN a LIMIT 100`,
-		Parameters: neoism.Props{"name": "Dr McCoy"},
-		Result:     &res,
+		Statement: query,
+		Parameters: neoism.Props{"label": label},
+		// Result:     &res,
+		Result:     nil,
 	}
-	err = db.Cypher(&cq)
-	if err != nil {
-		log.Fatal(err)
-	}
-	utils.LOG.Info(db, n)
-	utils.LOG.Info("Result => ", cq.Result) // Dont know yet how to tame results :)
- */
+	err := c.db.Cypher(&cq)
+	//	utils.LOG.Debug("Found %s", res)
+	utils.HandleError(err)
+}

@@ -73,3 +73,12 @@ func (c *ConnectionTestImpl) FindAlbums(artist Artist) []Album {
 func (c *ConnectionTestImpl) DeleteArtist(id string) {
 }
 
+func (c *ConnectionTestImpl)  FindSongsByArtist(artistName string) []Song {
+
+return nil
+}
+func (c *ConnectionTestImpl)  SaveSong(song Song) {
+}
+func (c *ConnectionTestImpl) ClearDbPerLabel(label string) {
+}
+

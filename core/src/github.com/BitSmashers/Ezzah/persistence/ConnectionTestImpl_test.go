@@ -22,6 +22,19 @@ func TestSaveNewArtist(t *testing.T) {
 		}
 	}
 }
+
+func TestSaveSongs(t *testing.T) {
+	cnx := CreateNewConnectionForTest()
+	var songs[] Song
+	songs = make([]Song, 3)
+	songs[0] = Song{"123","Good good", "Pierre"}
+	songs[1] = Song{"456","Water", "Pierre"}
+	songs[2] = Song{"789","Sunny", "Paul"}
+	cnx.SaveSong(songs[0])
+	cnx.SaveSong(songs[1])
+	cnx.SaveSong(songs[2])
+
+}
 /*
 	Id      string `json:"id"`
 	Name    string `json:"name"`

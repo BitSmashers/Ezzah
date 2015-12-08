@@ -18,11 +18,16 @@ type Connection interface {
 	SaveAlbums(artist Artist, albums []Album)
 	FindAlbum(title string) *Album
 	FindAlbums(artist Artist) []Album
-
+	//Songs
+	FindSongsByArtist(artistName string) []Song
+	SaveSong(song Song)
+	//Clear
+	ClearDbPerLabel(label string)
+	//Others
 	ToString() string
 }
 
-func CreateNewConnection() Connection {
+func CreateNewConnection(specialLabel... string) Connection {
 	log.Println("Trying to connect database...")
 	//http://your_user:your_password@neo4j.yourdomain.com/db/data/
 	//	dbpath := "http://neo4j:rirh@localhost:7474/db/data"
@@ -30,7 +35,7 @@ func CreateNewConnection() Connection {
 	db, err := neoism.Connect(dbpath)
 	utils.HandleError(err)
 
-	c := NewConnectionNeo(dbpath, db)
+	c := NewConnectionNeo(dbpath, db, specialLabel...)
 	return Connection(&c)
 
 }

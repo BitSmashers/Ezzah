@@ -13,7 +13,10 @@ import (
 )
 
 func TestSaveNewArtistN(t *testing.T) {
-	cnx := CreateNewConnection()
+	label := "TestSaveNewArtistN"
+	cnx := CreateNewConnection(label)
+	defer cnx.ClearDbPerLabel(label)
+
 	var artists[] Artist
 	artists = make([]Artist, 3)
 	albums0 := []Album{Album{Id:"1", Title:"Soleil"}, Album{Id:"2", Title:"Lune"}, Album{Id:"3", Title:"Pluto"}}
@@ -24,15 +27,21 @@ func TestSaveNewArtistN(t *testing.T) {
 	artists[1] = Artist{"456", "Paul", "Details2", albums1, "France"}
 	artists[2] = Artist{"789", "Jack", "Details3", albums2, "France"}
 	utils.LOG.Debug("ok")
-//	cnx.SaveArtists(artists)
+	cnx.SaveArtists(artists)
 
 	//try to retrieve them
 	artistsRet := cnx.FindArtists("Pierre")
-	utils.LOG.Debug("Artistes : ",artistsRet)
-	assert.Equal(t, len(artistsRet), 1, "")
+	utils.LOG.Debug("Artistes : ", artistsRet)
+	assert.Equal(t, len(artistsRet), 1)
+
+	//TODO Remove artist and check
+
 }
 func TestSaveFindAlbum(t *testing.T) {
-	cnx := CreateNewConnection()
+	label := "TestSaveFindAlbum"
+	cnx := CreateNewConnection(label)
+	defer cnx.ClearDbPerLabel(label)
+
 	var artists[] Artist
 	artists = make([]Artist, 1)
 	albums0 := []Album{Album{Id:"1", Title:"Soleil"}, Album{Id:"2", Title:"Lune"}, Album{Id:"3", Title:"Pluto"}}
@@ -46,23 +55,64 @@ func TestSaveFindAlbum(t *testing.T) {
 }
 
 func TestSaveNewArtistN2(t *testing.T) {
-	cnx := CreateNewConnectionForTest()
+	label := "TestSaveNewArtistN2"
+	cnx := CreateNewConnection(label)
+	defer cnx.ClearDbPerLabel(label)
+
 	var artists[] Artist
 	artists = make([]Artist, 3)
 	artists[0] = Artist{"123", "Pierre", "Details", nil, "France"}
 	artists[1] = Artist{"456", "Paul", "Details2", nil, "France"}
 	artists[2] = Artist{"789", "Jack", "Details3", nil, "France"}
-	//cnx.SaveArtists(artists)
+	cnx.SaveArtists(artists)
 	log.Println("Search...")
 	cnx.FindArtists("Pierre")
-	//	defer cnx.DeleteArtist("123")
-	//	defer cnx.DeleteArtist("456")
-	//	defer cnx.DeleteArtist("789")
+}
 
-	//	for _, a := range artists {
-	//		retrievedArtist := cnx.FindArtists(a.Name)
-	//		for _, ra := range retrievedArtist {
-	//			assert.Equal(t, ra.Name, &a.Name, "Wrong artist retrieved ", retrievedArtist, "instead of ", a)
-	//		}
-	//	}
+func TestSaveSongsNeo(t *testing.T) {
+	label := "TestSaveNewArtistN2"
+	cnx := CreateNewConnection(label)
+	defer cnx.ClearDbPerLabel(label)
+
+	var songs[] Song
+	songs = make([]Song, 3)
+	songs[0] = Song{"123", "Good good", "Pastore"}
+	songs[1] = Song{"456", "Water", "Pastore"}
+	songs[2] = Song{"789", "Sunny", "Paul"}
+	cnx.SaveSong(songs[0])
+	cnx.SaveSong(songs[1])
+	//	cnx.SaveSong(songs[2])
+	songsFromDb := cnx.FindSongsByArtist("Pastore")
+
+	assert.EqualValues(t, 2, len(songsFromDb))
+	assert.EqualValues(t, songs[1], (songsFromDb)[1])
+	assert.EqualValues(t, songs[0], (songsFromDb)[0])
+}
+
+// Check db cleaning from labels
+func TestClearDbByLabel(t *testing.T) {
+	label := "TestDeleteLabels"
+	cnx := CreateNewConnection(label)
+
+	s1 := Song{"678", "678SongTitle", "678Artist"}
+	cnx.SaveSong(s1)
+	s2 := Song{"789", "789SongTitle", "789Artist"}
+	cnx.SaveSong(s2)
+	s1s := cnx.FindSongsByArtist("678Artist")
+	s2s := cnx.FindSongsByArtist("789Artist")
+
+	assert.EqualValues(t, 1, len(s1s))
+	assert.EqualValues(t, s1, s1s[0])
+
+	assert.EqualValues(t, 1, len(s2s))
+	assert.EqualValues(t, s2, s2s[0])
+
+	cnx.ClearDbPerLabel(label)
+
+	s1s = cnx.FindSongsByArtist("678Artist")
+	s2s = cnx.FindSongsByArtist("789Artist")
+
+	assert.EqualValues(t, 0, len(s1s))
+	assert.EqualValues(t, 0, len(s2s))
+
 }

@@ -3,7 +3,7 @@ package utils
 import "net/http"
 import (
 	"io/ioutil"
-	"log"
+
 	"time"
 )
 
@@ -33,13 +33,40 @@ func GetJsonWithRetry(url string, retry int) ([]byte, error) {
 		time.Sleep(200 * time.Millisecond)
 		return GetJsonWithRetry(url, retry - 1)
 	}
-	log.Println("Done, retry left ", retry)
+	LOG.Info("Request [%s] done, retry left %d",url, retry)
 	return val, nil
 }
 
-func HandleError(err error){
+func HandleError(err error) {
 	if err != nil {
-//		LOG.Fatal(err)
+		LOG.Error("Error : %s",err)
 		panic(err)
 	}
+}
+
+func Append(slice, data []string) []string {
+	l := len(slice)
+	if l + len(data) > cap(slice) {  // reallocate
+		// Allocate double what's needed, for future growth.
+		newSlice := make([]string, (l + len(data)) * 2)
+		copy(newSlice, slice)
+		slice = newSlice
+	}
+	slice = slice[0:l + len(data)]
+	for i, c := range data {
+		slice[l + i] = c
+	}
+	return slice
+}
+func AppendOne(elem string, slice []string) []string {
+	l := len(slice)
+	if l + 1 > cap(slice) {  // reallocate
+		// Allocate double what's needed, for future growth.
+		newSlice := make([]string, (l + 1))
+		copy(newSlice, slice)
+		slice = newSlice
+	}
+	slice = slice[0:l + 1]
+	slice[l + 1] = elem
+	return slice
 }

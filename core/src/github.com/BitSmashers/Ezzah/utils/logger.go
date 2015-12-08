@@ -4,18 +4,25 @@ import (
 	"github.com/op/go-logging"
 )
 
+type Logger struct {
+	log *logging.Logger
+}
+
 var LOG = InitLog()
 
-// Example format string. Everything except the message has a custom color
-// which is dependent on the log level. Many fields have a custom output
-// formatting too, eg. the time returns the hour down to the milli second.
+// Ezzah logging general format
 var format = logging.MustStringFormatter(
-	"%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}",
+	"%{id:03x} %{shortfile} %{level:.6s} ▶ %{color:reset} %{message}",
 )
 
 func InitLog() *logging.Logger {
+	logging.SetFormatter(format)
 	var log, err = logging.GetLogger("Ezzah")
-	HandleError(err)
+
+	//Bypass HandleError(err) to avoid init loop
+	if err != nil {
+		panic(err)
+	}
 	log.Debug("Logger successfuly init")
 	return log
 }
